@@ -1,13 +1,24 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Hero from "@/components/Hero";
+import AlumniDirectory from "@/components/AlumniDirectory";
+import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <>
+      <Helmet>
+        <title>MBA Alumni Directory | A Decade of Excellence</title>
+        <meta
+          name="description"
+          content="Explore our MBA alumni network spanning 10 years of exceptional graduates. Connect with 300+ alumni across 50+ countries working at top global companies."
+        />
+      </Helmet>
+      <div className="min-h-screen bg-background">
+        <Hero />
+        <AlumniDirectory />
+        <Footer />
       </div>
-    </div>
+    </>
   );
 };
 
