@@ -1,16 +1,19 @@
-import { Alumni } from "@/data/alumni";
-import { MapPin, Briefcase, GraduationCap } from "lucide-react";
+import { AlumniProfile } from "./AlumniDirectory";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MapPin, Briefcase, GraduationCap, Linkedin, Mail } from "lucide-react";
 
 interface AlumniCardProps {
-  alumni: Alumni;
+  alumni: AlumniProfile;
   index: number;
 }
 
 const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
-  const initials = alumni.name
+  const initials = alumni.full_name
     .split(" ")
     .map((n) => n[0])
-    .join("");
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   return (
     <div
@@ -23,46 +26,77 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
       <div className="p-6">
         <div className="flex items-start gap-4">
           {/* Avatar */}
-          <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-cardinal-light flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
-            <span className="text-primary-foreground font-display text-xl font-semibold">
+          <Avatar className="w-16 h-16 shadow-md group-hover:scale-105 transition-transform duration-300">
+            <AvatarImage src={alumni.avatar_url || undefined} alt={alumni.full_name} />
+            <AvatarFallback className="bg-gradient-to-br from-primary to-cardinal-light text-primary-foreground font-display text-xl">
               {initials}
-            </span>
-          </div>
+            </AvatarFallback>
+          </Avatar>
 
           {/* Info */}
           <div className="flex-1 min-w-0">
             <h3 className="font-display text-lg font-semibold text-foreground truncate group-hover:text-primary transition-colors">
-              {alumni.name}
+              {alumni.full_name}
             </h3>
             
             <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
               <GraduationCap className="w-4 h-4 text-primary" />
-              <span className="font-medium">Class of {alumni.graduationYear}</span>
+              <span className="font-medium">Class of {alumni.graduation_year}</span>
             </div>
           </div>
         </div>
 
         <div className="mt-4 space-y-2">
-          <div className="flex items-start gap-2 text-sm">
-            <Briefcase className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="font-medium text-foreground">{alumni.currentRole}</p>
-              <p className="text-muted-foreground">{alumni.company}</p>
+          {(alumni.job_title || alumni.company) && (
+            <div className="flex items-start gap-2 text-sm">
+              <Briefcase className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+              <div>
+                {alumni.job_title && <p className="font-medium text-foreground">{alumni.job_title}</p>}
+                {alumni.company && <p className="text-muted-foreground">{alumni.company}</p>}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4 flex-shrink-0" />
-            <span>{alumni.location}</span>
-          </div>
+          {alumni.location && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <MapPin className="w-4 h-4 flex-shrink-0" />
+              <span>{alumni.location}</span>
+            </div>
+          )}
         </div>
 
         {/* Specialization badge */}
-        <div className="mt-4">
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-            {alumni.specialization}
-          </span>
-        </div>
+        {alumni.specialization && (
+          <div className="mt-4">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+              {alumni.specialization}
+            </span>
+          </div>
+        )}
+
+        {/* Contact links */}
+        {(alumni.linkedin_url || alumni.email) && (
+          <div className="mt-4 pt-4 border-t flex items-center gap-3">
+            {alumni.linkedin_url && (
+              <a
+                href={alumni.linkedin_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Linkedin className="w-5 h-5" />
+              </a>
+            )}
+            {alumni.email && (
+              <a
+                href={`mailto:${alumni.email}`}
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Mail className="w-5 h-5" />
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
