@@ -18,12 +18,12 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-navy-light to-secondary opacity-80" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-cardinal-light opacity-80" />
       
       <div className="p-6">
         <div className="flex items-start gap-4">
           {/* Avatar */}
-          <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-navy-light flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
+          <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-primary to-cardinal-light flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300">
             <span className="text-primary-foreground font-display text-xl font-semibold">
               {initials}
             </span>
@@ -36,7 +36,7 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
             </h3>
             
             <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-              <GraduationCap className="w-4 h-4 text-secondary" />
+              <GraduationCap className="w-4 h-4 text-primary" />
               <span className="font-medium">Class of {alumni.graduationYear}</span>
             </div>
           </div>

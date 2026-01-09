@@ -6,91 +6,91 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 222 60% 22%;
-    --primary-foreground: 45 100% 96%;
+    --primary: 358 96% 40%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 80% 55%;
-    --secondary-foreground: 222 60% 15%;
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 358 96% 40%;
 
-    --muted: 210 20% 94%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 45 80% 55%;
-    --accent-foreground: 222 60% 15%;
+    --accent: 358 96% 40%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 222 60% 22%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 358 96% 40%;
 
     --radius: 0.75rem;
 
-    /* Custom tokens */
-    --gold: 45 80% 55%;
-    --gold-light: 45 80% 70%;
-    --navy: 222 60% 22%;
-    --navy-light: 222 40% 35%;
-    --cream: 45 100% 96%;
+    /* Custom tokens - UW-Madison Colors */
+    --cardinal: 358 96% 40%;
+    --cardinal-light: 358 80% 55%;
+    --cardinal-dark: 358 96% 30%;
+    --white: 0 0% 100%;
+    --gray: 0 0% 40%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(222 60% 22%) 0%, hsl(222 40% 35%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(45 80% 55%) 0%, hsl(45 80% 65%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(358 96% 40%) 0%, hsl(358 96% 30%) 100%);
+    --gradient-cardinal: linear-gradient(135deg, hsl(358 96% 40%) 0%, hsl(358 80% 50%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
 
     /* Shadows */
-    --shadow-card: 0 4px 20px -4px hsl(222 60% 22% / 0.08);
-    --shadow-card-hover: 0 12px 32px -8px hsl(222 60% 22% / 0.15);
-    --shadow-glow: 0 0 40px hsl(45 80% 55% / 0.3);
+    --shadow-card: 0 4px 20px -4px hsl(358 96% 40% / 0.08);
+    --shadow-card-hover: 0 12px 32px -8px hsl(358 96% 40% / 0.15);
+    --shadow-glow: 0 0 40px hsl(358 96% 40% / 0.3);
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-foreground: 0 0% 26%;
+    --sidebar-primary: 358 96% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 91%;
+    --sidebar-ring: 358 96% 40%;
   }
 
   .dark {
-    --background: 222 47% 8%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 8%;
+    --foreground: 0 0% 98%;
 
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 45 80% 55%;
-    --primary-foreground: 222 60% 15%;
+    --primary: 358 80% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 40% 20%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 222 40% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 17%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 45 80% 55%;
-    --accent-foreground: 222 60% 15%;
+    --accent: 358 80% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 222 40% 20%;
-    --input: 222 40% 20%;
-    --ring: 45 80% 55%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 358 80% 55%;
   }
 }
 
@@ -122,8 +122,8 @@
     background: var(--gradient-hero);
   }
 
-  .gradient-gold {
-    background: var(--gradient-gold);
+  .gradient-cardinal {
+    background: var(--gradient-cardinal);
   }
 
   .shadow-card {
@@ -135,7 +135,7 @@
   }
 
   .text-gradient {
-    background: var(--gradient-gold);
+    background: var(--gradient-cardinal);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
