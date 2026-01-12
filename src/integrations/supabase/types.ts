@@ -65,6 +65,51 @@ export type Database = {
         }
         Relationships: []
       }
+      alumni_submissions: {
+        Row: {
+          bio: string | null
+          company: string | null
+          created_at: string
+          email: string
+          full_name: string
+          graduation_year: number
+          id: string
+          job_title: string | null
+          linkedin_url: string | null
+          location: string | null
+          specialization: string | null
+          status: string
+        }
+        Insert: {
+          bio?: string | null
+          company?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          graduation_year: number
+          id?: string
+          job_title?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          specialization?: string | null
+          status?: string
+        }
+        Update: {
+          bio?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          graduation_year?: number
+          id?: string
+          job_title?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          specialization?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
