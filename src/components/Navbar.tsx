@@ -11,9 +11,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { GraduationCap, LogOut, User, Edit } from "lucide-react";
+import { GraduationCap, LogOut, User, Edit, Shield } from "lucide-react";
 import ProfileForm from "./ProfileForm";
 import { AlumniSubmissionForm } from "./AlumniSubmissionForm";
+import { useNavigate } from "react-router-dom";
 interface AlumniProfile {
   id: string;
   full_name: string;
@@ -33,6 +34,7 @@ interface NavbarProps {
 }
 
 const Navbar = ({ onProfileUpdate }: NavbarProps) => {
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [profile, setProfile] = useState<AlumniProfile | null>(null);
   const [showProfileForm, setShowProfileForm] = useState(false);
@@ -117,6 +119,10 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
                       <DropdownMenuItem onClick={() => setShowProfileForm(true)}>
                         <Edit className="w-4 h-4 mr-2" />
                         {profile ? "Edit Profile" : "Create Profile"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate("/admin")}>
+                        <Shield className="w-4 h-4 mr-2" />
+                        Admin Dashboard
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={handleSignOut}>
