@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { GraduationCap, LogOut, User, Edit } from "lucide-react";
 import ProfileForm from "./ProfileForm";
-
+import { AlumniSubmissionForm } from "./AlumniSubmissionForm";
 interface AlumniProfile {
   id: string;
   full_name: string;
@@ -89,6 +89,7 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
 
             {/* Actions */}
             <div className="flex items-center gap-3">
+              <AlumniSubmissionForm />
               {user ? (
                 <>
                   {!profile && (
