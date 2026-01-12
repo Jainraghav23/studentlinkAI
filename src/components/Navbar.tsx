@@ -125,11 +125,7 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </>
-              ) : (
-                <Button asChild>
-                  <Link to="/auth">Sign In</Link>
-                </Button>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
