@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/hooks/use-admin";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft } from "lucide-react";
+import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 
 interface AlumniSubmission {
@@ -41,6 +42,7 @@ interface AlumniSubmission {
 const Admin = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: adminLoading } = useAdmin();
   const [submissions, setSubmissions] = useState<AlumniSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSubmission, setSelectedSubmission] = useState<AlumniSubmission | null>(null);
@@ -147,10 +149,29 @@ const Admin = () => {
     }
   };
 
-  if (authLoading || loading) {
+  if (authLoading || adminLoading || loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
+            <ShieldAlert className="w-8 h-8 text-destructive" />
+          </div>
+          <h1 className="font-display text-2xl font-bold">Access Denied</h1>
+          <p className="text-muted-foreground max-w-md">
+            You don't have permission to access this page. Only administrators can view the admin dashboard.
+          </p>
+          <Button onClick={() => navigate("/")} className="mt-4">
+            Return to Home
+          </Button>
+        </div>
       </div>
     );
   }
