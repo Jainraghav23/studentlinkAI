@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/hooks/use-admin";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -36,6 +37,7 @@ interface NavbarProps {
 const Navbar = ({ onProfileUpdate }: NavbarProps) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const [profile, setProfile] = useState<AlumniProfile | null>(null);
   const [showProfileForm, setShowProfileForm] = useState(false);
 
@@ -120,10 +122,12 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
                         <Edit className="w-4 h-4 mr-2" />
                         {profile ? "Edit Profile" : "Create Profile"}
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate("/admin")}>
-                        <Shield className="w-4 h-4 mr-2" />
-                        Admin Dashboard
-                      </DropdownMenuItem>
+                      {isAdmin && (
+                        <DropdownMenuItem onClick={() => navigate("/admin")}>
+                          <Shield className="w-4 h-4 mr-2" />
+                          Admin Dashboard
+                        </DropdownMenuItem>
+                      )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={handleSignOut}>
                         <LogOut className="w-4 h-4 mr-2" />
