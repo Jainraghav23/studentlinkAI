@@ -18,6 +18,8 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          claim_token: string | null
+          claimed: boolean | null
           company: string | null
           created_at: string
           email: string | null
@@ -34,6 +36,8 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          claim_token?: string | null
+          claimed?: boolean | null
           company?: string | null
           created_at?: string
           email?: string | null
@@ -50,6 +54,8 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          claim_token?: string | null
+          claimed?: boolean | null
           company?: string | null
           created_at?: string
           email?: string | null
