@@ -79,11 +79,11 @@ const Admin = () => {
     setProcessing(submission.id);
     
     try {
-      // Create the alumni profile
+      // Create an unclaimed alumni profile that can be claimed by the alumni
       const { error: profileError } = await supabase
         .from("alumni_profiles")
         .insert({
-          user_id: user!.id, // Using admin's user_id as placeholder
+          user_id: user!.id, // Temporary placeholder - will be updated when claimed
           full_name: submission.full_name,
           email: submission.email,
           graduation_year: submission.graduation_year,
@@ -93,6 +93,8 @@ const Admin = () => {
           specialization: submission.specialization,
           linkedin_url: submission.linkedin_url,
           bio: submission.bio,
+          claimed: false, // Profile is unclaimed, ready for alumni to claim
+          claim_token: crypto.randomUUID(), // Generate a claim token
         });
 
       if (profileError) throw profileError;
@@ -105,7 +107,7 @@ const Admin = () => {
 
       if (updateError) throw updateError;
 
-      toast.success(`${submission.full_name} has been approved and added to the directory!`);
+      toast.success(`${submission.full_name} has been approved! They can now claim their profile using their email.`);
       fetchSubmissions();
       setSelectedSubmission(null);
     } catch (error: any) {

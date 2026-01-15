@@ -16,6 +16,7 @@ import { GraduationCap, LogOut, User, Edit, Shield } from "lucide-react";
 import ProfileForm from "./ProfileForm";
 import { AlumniSubmissionForm } from "./AlumniSubmissionForm";
 import { useNavigate } from "react-router-dom";
+
 interface AlumniProfile {
   id: string;
   full_name: string;
@@ -28,6 +29,7 @@ interface AlumniProfile {
   email: string | null;
   bio: string | null;
   avatar_url: string | null;
+  claimed: boolean | null;
 }
 
 interface NavbarProps {
