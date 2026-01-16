@@ -1,1 +1,4 @@
 project_id = "unmdpiavvvjaipnvhnum"
+
+[functions.submit-alumni]
+verify_jwt = false

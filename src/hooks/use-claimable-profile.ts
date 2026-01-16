@@ -42,11 +42,12 @@ export const useClaimableProfile = () => {
       return;
     }
 
-    // Check for unclaimed profile matching user's email
+    // Check for unclaimed profile matching user's email (user_id should be NULL)
     const { data: unclaimed } = await supabase
       .from("alumni_profiles")
       .select("*")
       .eq("claimed", false)
+      .is("user_id", null)
       .ilike("email", user.email)
       .single();
 
