@@ -139,7 +139,54 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      alumni_profiles_public: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          claimed: boolean | null
+          company: string | null
+          created_at: string | null
+          full_name: string | null
+          graduation_year: number | null
+          id: string | null
+          job_title: string | null
+          linkedin_url: string | null
+          location: string | null
+          specialization: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          claimed?: boolean | null
+          company?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          graduation_year?: number | null
+          id?: string | null
+          job_title?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          specialization?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          claimed?: boolean | null
+          company?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          graduation_year?: number | null
+          id?: string | null
+          job_title?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          specialization?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
