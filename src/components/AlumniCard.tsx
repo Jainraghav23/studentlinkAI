@@ -1,6 +1,6 @@
 import { AlumniProfile } from "./AlumniDirectory";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Briefcase, GraduationCap, Linkedin, Mail } from "lucide-react";
+import { MapPin, Briefcase, GraduationCap, Linkedin } from "lucide-react";
 
 interface AlumniCardProps {
   alumni: AlumniProfile;
@@ -75,26 +75,16 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
         )}
 
         {/* Contact links */}
-        {(alumni.linkedin_url || alumni.email) && (
+        {alumni.linkedin_url && (
           <div className="mt-4 pt-4 border-t flex items-center gap-3">
-            {alumni.linkedin_url && (
-              <a
-                href={alumni.linkedin_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-            )}
-            {alumni.email && (
-              <a
-                href={`mailto:${alumni.email}`}
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Mail className="w-5 h-5" />
-              </a>
-            )}
+            <a
+              href={alumni.linkedin_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Linkedin className="w-5 h-5" />
+            </a>
           </div>
         )}
       </div>
