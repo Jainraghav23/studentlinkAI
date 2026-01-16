@@ -36,7 +36,8 @@ export function AlumniSubmissionForm() {
     location: "",
     specialization: "",
     linkedin_url: "",
-    bio: ""
+    bio: "",
+    website: "" // Honeypot field - bots will fill this, humans won't see it
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,12 +48,28 @@ export function AlumniSubmissionForm() {
       return;
     }
 
+    // Client-side validation
+    if (formData.full_name.length > 200) {
+      toast.error("Name is too long (max 200 characters)");
+      return;
+    }
+
+    if (formData.email.length > 320) {
+      toast.error("Email is too long");
+      return;
+    }
+
+    if (formData.bio.length > 2000) {
+      toast.error("Bio is too long (max 2000 characters)");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from("alumni_submissions")
-        .insert({
+      // Use edge function for rate-limited, validated submissions
+      const { data, error } = await supabase.functions.invoke("submit-alumni", {
+        body: {
           full_name: formData.full_name,
           email: formData.email,
           graduation_year: parseInt(formData.graduation_year),
@@ -61,12 +78,19 @@ export function AlumniSubmissionForm() {
           location: formData.location || null,
           specialization: formData.specialization || null,
           linkedin_url: formData.linkedin_url || null,
-          bio: formData.bio || null
-        });
+          bio: formData.bio || null,
+          website: formData.website // Honeypot field
+        }
+      });
 
       if (error) throw error;
 
-      toast.success("Your profile has been submitted for review!");
+      if (data?.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      toast.success(data?.message || "Your profile has been submitted for review!");
       setFormData({
         full_name: "",
         email: "",
@@ -76,10 +100,12 @@ export function AlumniSubmissionForm() {
         location: "",
         specialization: "",
         linkedin_url: "",
-        bio: ""
+        bio: "",
+        website: ""
       });
       setOpen(false);
     } catch (error: any) {
+      console.error("Submission error:", error);
       toast.error(error.message || "Failed to submit profile");
     } finally {
       setIsSubmitting(false);
@@ -106,6 +132,7 @@ export function AlumniSubmissionForm() {
               value={formData.full_name}
               onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
               placeholder="John Doe"
+              maxLength={200}
               required
             />
           </div>
@@ -118,6 +145,7 @@ export function AlumniSubmissionForm() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="john@example.com"
+              maxLength={320}
               required
             />
           </div>
@@ -149,6 +177,7 @@ export function AlumniSubmissionForm() {
                 value={formData.job_title}
                 onChange={(e) => setFormData({ ...formData, job_title: e.target.value })}
                 placeholder="Software Engineer"
+                maxLength={200}
               />
             </div>
             <div className="space-y-2">
@@ -158,6 +187,7 @@ export function AlumniSubmissionForm() {
                 value={formData.company}
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                 placeholder="Google"
+                maxLength={200}
               />
             </div>
           </div>
@@ -169,6 +199,7 @@ export function AlumniSubmissionForm() {
               value={formData.location}
               onChange={(e) => setFormData({ ...formData, location: e.target.value })}
               placeholder="San Francisco, CA"
+              maxLength={200}
             />
           </div>
 
@@ -198,6 +229,7 @@ export function AlumniSubmissionForm() {
               value={formData.linkedin_url}
               onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
               placeholder="https://linkedin.com/in/johndoe"
+              maxLength={500}
             />
           </div>
 
@@ -209,6 +241,24 @@ export function AlumniSubmissionForm() {
               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
               placeholder="Tell us about yourself..."
               rows={3}
+              maxLength={2000}
+            />
+            <p className="text-xs text-muted-foreground text-right">
+              {formData.bio.length}/2000
+            </p>
+          </div>
+
+          {/* Honeypot field - hidden from users but bots will fill it */}
+          <div className="absolute -left-[9999px] opacity-0 pointer-events-none" aria-hidden="true">
+            <Label htmlFor="website">Website</Label>
+            <Input
+              id="website"
+              name="website"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={formData.website}
+              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
             />
           </div>
 

@@ -79,11 +79,12 @@ const Admin = () => {
     setProcessing(submission.id);
     
     try {
-      // Create an unclaimed alumni profile that can be claimed by the alumni
+      // Create an unclaimed alumni profile with NULL user_id
+      // The profile will be claimed by the alumni using their email
       const { error: profileError } = await supabase
         .from("alumni_profiles")
         .insert({
-          user_id: user!.id, // Temporary placeholder - will be updated when claimed
+          user_id: null, // NULL for unclaimed profiles - will be set when claimed
           full_name: submission.full_name,
           email: submission.email,
           graduation_year: submission.graduation_year,
