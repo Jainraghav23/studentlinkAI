@@ -120,10 +120,17 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
                         <p className="text-xs text-muted-foreground">{user.email}</p>
                       </div>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => setShowProfileForm(true)}>
-                        <Edit className="w-4 h-4 mr-2" />
-                        {profile ? "Edit Profile" : "Create Profile"}
-                      </DropdownMenuItem>
+                      {profile ? (
+                        <DropdownMenuItem onClick={() => navigate("/my-profile")}>
+                          <Edit className="w-4 h-4 mr-2" />
+                          Edit Profile
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem onClick={() => setShowProfileForm(true)}>
+                          <Edit className="w-4 h-4 mr-2" />
+                          Create Profile
+                        </DropdownMenuItem>
+                      )}
                       {isAdmin && (
                         <DropdownMenuItem onClick={() => navigate("/admin")}>
                           <Shield className="w-4 h-4 mr-2" />
