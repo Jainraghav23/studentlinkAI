@@ -14,9 +14,9 @@ export interface AlumniProfile {
   location: string | null;
   specialization: string | null;
   linkedin_url: string | null;
-  email: string | null;
   bio: string | null;
   avatar_url: string | null;
+  // Note: email is intentionally excluded from public queries for privacy
 }
 
 interface AlumniDirectoryProps {
@@ -31,9 +31,10 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
 
   const fetchAlumni = async () => {
     setLoading(true);
+    // Explicitly select only non-sensitive columns (excluding email, claim_token, user_id)
     const { data, error } = await supabase
       .from("alumni_profiles")
-      .select("*")
+      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url")
       .order("graduation_year", { ascending: false });
 
     if (!error && data) {
