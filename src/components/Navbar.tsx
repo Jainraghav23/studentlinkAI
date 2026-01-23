@@ -93,6 +93,13 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
               </span>
             </Link>
 
+            {/* Navigation Links */}
+            <div className="flex items-center gap-6">
+              <Link to="/community" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                Community
+              </Link>
+            </div>
+
             {/* Actions */}
             <div className="flex items-center gap-3">
               <AlumniSubmissionForm />
