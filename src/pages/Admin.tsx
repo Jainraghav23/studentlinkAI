@@ -21,8 +21,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft, ShieldAlert } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft, ShieldAlert, Users, FileText } from "lucide-react";
 import { toast } from "sonner";
+import AdminUserManagement from "@/components/AdminUserManagement";
 
 interface AlumniSubmission {
   id: string;
@@ -212,95 +214,114 @@ const Admin = () => {
 
       {/* Content */}
       <main className="container mx-auto px-4 py-8">
-        <Card className="shadow-card">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="font-display text-xl">Alumni Submissions</CardTitle>
-                <CardDescription>
-                  {pendingCount > 0 
-                    ? `${pendingCount} pending submission${pendingCount > 1 ? "s" : ""} to review`
-                    : "No pending submissions"
-                  }
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {submissions.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">
-                No submissions yet.
-              </p>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Year</TableHead>
-                      <TableHead>Company</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Submitted</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {submissions.map((submission) => (
-                      <TableRow key={submission.id}>
-                        <TableCell className="font-medium">{submission.full_name}</TableCell>
-                        <TableCell>{submission.email}</TableCell>
-                        <TableCell>{submission.graduation_year}</TableCell>
-                        <TableCell>{submission.company || "-"}</TableCell>
-                        <TableCell>{getStatusBadge(submission.status)}</TableCell>
-                        <TableCell>
-                          {new Date(submission.created_at).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => setSelectedSubmission(submission)}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            {submission.status === "pending" && (
-                              <>
+        <Tabs defaultValue="submissions" className="space-y-6">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="submissions" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Submissions
+            </TabsTrigger>
+            <TabsTrigger value="admins" className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Admin Users
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="submissions">
+            <Card className="shadow-card">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="font-display text-xl">Alumni Submissions</CardTitle>
+                    <CardDescription>
+                      {pendingCount > 0 
+                        ? `${pendingCount} pending submission${pendingCount > 1 ? "s" : ""} to review`
+                        : "No pending submissions"
+                      }
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {submissions.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-8">
+                    No submissions yet.
+                  </p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Year</TableHead>
+                          <TableHead>Company</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Submitted</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {submissions.map((submission) => (
+                          <TableRow key={submission.id}>
+                            <TableCell className="font-medium">{submission.full_name}</TableCell>
+                            <TableCell>{submission.email}</TableCell>
+                            <TableCell>{submission.graduation_year}</TableCell>
+                            <TableCell>{submission.company || "-"}</TableCell>
+                            <TableCell>{getStatusBadge(submission.status)}</TableCell>
+                            <TableCell>
+                              {new Date(submission.created_at).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                  onClick={() => handleApprove(submission)}
-                                  disabled={processing === submission.id}
+                                  onClick={() => setSelectedSubmission(submission)}
                                 >
-                                  {processing === submission.id ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                  ) : (
-                                    <Check className="w-4 h-4" />
-                                  )}
+                                  <Eye className="w-4 h-4" />
                                 </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                  onClick={() => handleReject(submission)}
-                                  disabled={processing === submission.id}
-                                >
-                                  <X className="w-4 h-4" />
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                                {submission.status === "pending" && (
+                                  <>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                      onClick={() => handleApprove(submission)}
+                                      disabled={processing === submission.id}
+                                    >
+                                      {processing === submission.id ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                      ) : (
+                                        <Check className="w-4 h-4" />
+                                      )}
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                      onClick={() => handleReject(submission)}
+                                      disabled={processing === submission.id}
+                                    >
+                                      <X className="w-4 h-4" />
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="admins">
+            <AdminUserManagement />
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Submission Detail Dialog */}
