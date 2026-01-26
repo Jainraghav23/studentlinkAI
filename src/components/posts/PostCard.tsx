@@ -4,10 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
-import { Heart, MessageCircle, Share2, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Trash2, Pencil, X, Check } from "lucide-react";
 import { CommentSection } from "./CommentSection";
 
 interface PostCardProps {
@@ -29,6 +30,9 @@ export const PostCard = ({ post, onDeleted }: PostCardProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showComments, setShowComments] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(post.content);
+  const [isSaving, setIsSaving] = useState(false);
 
   const { data: likesData } = useQuery({
     queryKey: ["likes", post.id],
@@ -126,6 +130,37 @@ export const PostCard = ({ post, onDeleted }: PostCardProps) => {
     }
   };
 
+  const handleEdit = async () => {
+    if (!editContent.trim()) return;
+    
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from("posts")
+        .update({ content: editContent.trim() })
+        .eq("id", post.id);
+
+      if (error) throw error;
+
+      toast({ title: "Post updated" });
+      setIsEditing(false);
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    } catch (error: any) {
+      toast({
+        title: "Error updating post",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditContent(post.content);
+    setIsEditing(false);
+  };
+
   const initials = post.author?.full_name
     ?.split(" ")
     .map((n) => n[0])
@@ -148,15 +183,40 @@ export const PostCard = ({ post, onDeleted }: PostCardProps) => {
               </p>
             </div>
           </div>
-          {user?.id === post.user_id && (
-            <Button variant="ghost" size="icon" onClick={handleDelete}>
-              <Trash2 className="w-4 h-4" />
-            </Button>
+          {user?.id === post.user_id && !isEditing && (
+            <div className="flex gap-1">
+              <Button variant="ghost" size="icon" onClick={() => setIsEditing(true)}>
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={handleDelete}>
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
           )}
         </div>
       </CardHeader>
       <CardContent>
-        <p className="whitespace-pre-wrap">{post.content}</p>
+        {isEditing ? (
+          <div className="space-y-2">
+            <Textarea
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              className="min-h-[100px]"
+            />
+            <div className="flex gap-2 justify-end">
+              <Button variant="ghost" size="sm" onClick={cancelEdit} disabled={isSaving}>
+                <X className="w-4 h-4 mr-1" />
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleEdit} disabled={isSaving || !editContent.trim()}>
+                <Check className="w-4 h-4 mr-1" />
+                Save
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <p className="whitespace-pre-wrap">{post.content}</p>
+        )}
       </CardContent>
       <CardFooter className="flex-col items-stretch pt-0">
         <div className="flex items-center gap-4 py-2 border-t border-b">

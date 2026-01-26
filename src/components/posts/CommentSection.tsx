@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
-import { Send, Trash2 } from "lucide-react";
+import { Send, Trash2, Pencil, X, Check } from "lucide-react";
 
 interface Comment {
   id: string;
@@ -30,6 +30,8 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
   const queryClient = useQueryClient();
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState("");
 
   const { data: comments = [], isLoading } = useQuery({
     queryKey: ["comments", postId],
@@ -98,10 +100,44 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       if (error) throw error;
 
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      queryClient.invalidateQueries({ queryKey: ["comments-count", postId] });
       toast({ title: "Comment deleted" });
     } catch (error: any) {
       toast({
         title: "Error deleting comment",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const startEditing = (comment: Comment) => {
+    setEditingCommentId(comment.id);
+    setEditContent(comment.content);
+  };
+
+  const cancelEditing = () => {
+    setEditingCommentId(null);
+    setEditContent("");
+  };
+
+  const handleEditComment = async (commentId: string) => {
+    if (!editContent.trim()) return;
+
+    try {
+      const { error } = await supabase
+        .from("comments")
+        .update({ content: editContent.trim() })
+        .eq("id", commentId);
+
+      if (error) throw error;
+
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      toast({ title: "Comment updated" });
+      cancelEditing();
+    } catch (error: any) {
+      toast({
+        title: "Error updating comment",
         description: error.message,
         variant: "destructive",
       });
@@ -135,19 +171,55 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
                         addSuffix: true,
                       })}
                     </span>
-                    {user?.id === comment.user_id && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => handleDelete(comment.id)}
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
+                    {user?.id === comment.user_id && editingCommentId !== comment.id && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => startEditing(comment)}
+                        >
+                          <Pencil className="w-3 h-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => handleDelete(comment.id)}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </>
                     )}
                   </div>
                 </div>
-                <p className="text-sm">{comment.content}</p>
+                {editingCommentId === comment.id ? (
+                  <div className="flex gap-2 mt-1">
+                    <Input
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      className="flex-1 h-8 text-sm"
+                    />
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-8 w-8"
+                      onClick={cancelEditing}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handleEditComment(comment.id)}
+                      disabled={!editContent.trim()}
+                    >
+                      <Check className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-sm">{comment.content}</p>
+                )}
               </div>
             </div>
           ))}
