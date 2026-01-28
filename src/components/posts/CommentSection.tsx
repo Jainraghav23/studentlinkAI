@@ -14,6 +14,7 @@ interface Comment {
   content: string;
   user_id: string;
   created_at: string;
+  updated_at?: string;
   author?: {
     full_name: string;
     avatar_url: string | null;
@@ -170,6 +171,9 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
                       {formatDistanceToNow(new Date(comment.created_at), {
                         addSuffix: true,
                       })}
+                      {comment.updated_at && new Date(comment.updated_at).getTime() > new Date(comment.created_at).getTime() + 1000 && (
+                        <span className="ml-1 text-muted-foreground/70">(edited)</span>
+                      )}
                     </span>
                     {user?.id === comment.user_id && editingCommentId !== comment.id && (
                       <>
