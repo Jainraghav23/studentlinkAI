@@ -17,6 +17,7 @@ interface PostCardProps {
     content: string;
     user_id: string;
     created_at: string;
+    updated_at?: string;
     author?: {
       full_name: string;
       avatar_url: string | null;
@@ -180,6 +181,9 @@ export const PostCard = ({ post, onDeleted }: PostCardProps) => {
               <p className="font-medium">{post.author?.full_name || "Unknown User"}</p>
               <p className="text-xs text-muted-foreground">
                 {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
+                {post.updated_at && new Date(post.updated_at).getTime() > new Date(post.created_at).getTime() + 1000 && (
+                  <span className="ml-1 text-muted-foreground/70">(edited)</span>
+                )}
               </p>
             </div>
           </div>
