@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { AlumniProfile } from "./AlumniDirectory";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MapPin, Briefcase, GraduationCap, Linkedin } from "lucide-react";
@@ -16,8 +17,9 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
     .slice(0, 2);
 
   return (
-    <div
-      className="group relative bg-card rounded-lg shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden animate-fade-in"
+    <Link
+      to={`/alumni/${alumni.id}`}
+      className="group relative bg-card rounded-lg shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden animate-fade-in block"
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Accent bar */}
@@ -77,18 +79,20 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
         {/* Contact links */}
         {alumni.linkedin_url && (
           <div className="mt-4 pt-4 border-t flex items-center gap-3">
-            <a
-              href={alumni.linkedin_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+            <span
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(alumni.linkedin_url!, "_blank", "noopener,noreferrer");
+              }}
+              className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
             >
               <Linkedin className="w-5 h-5" />
-            </a>
+            </span>
           </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
