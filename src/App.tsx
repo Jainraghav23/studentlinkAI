@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import MyProfile from "./pages/MyProfile";
 import Community from "./pages/Community";
+import AlumniProfile from "./pages/AlumniProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
               <Route path="/admin" element={<Admin />} />
               <Route path="/my-profile" element={<MyProfile />} />
               <Route path="/community" element={<Community />} />
+              <Route path="/alumni/:id" element={<AlumniProfile />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
