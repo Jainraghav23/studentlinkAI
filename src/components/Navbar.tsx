@@ -95,7 +95,10 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
 
             {/* Navigation Links */}
             <div className="flex items-center gap-6">
-              <Link to="/community" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              <Link 
+                to="/community" 
+                className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
                 Community
               </Link>
             </div>
