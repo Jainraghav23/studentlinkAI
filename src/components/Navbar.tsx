@@ -83,24 +83,26 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="font-display text-lg font-semibold hidden sm:block">
-                MBA Alumni
-              </span>
-            </Link>
-
-            {/* Navigation Links */}
-            <div className="flex items-center gap-6">
-              <Link 
-                to="/community" 
-                className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
-              >
-                Community
+            {/* Logo & Navigation */}
+            <div className="flex items-center gap-4">
+              <Link to="/" className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                  <GraduationCap className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <span className="font-display text-lg font-semibold hidden sm:block">
+                  MBA Alumni
+                </span>
               </Link>
+
+              {/* Navigation Links */}
+              <div className="flex items-center gap-2">
+                <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
+                  <Link to="/">Directory</Link>
+                </Button>
+                <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
+                  <Link to="/community">Community</Link>
+                </Button>
+              </div>
             </div>
 
             {/* Actions */}
