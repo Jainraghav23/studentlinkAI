@@ -98,7 +98,7 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
               <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
                 <Link to="/community">Community</Link>
               </Button>
-              <AlumniSubmissionForm />
+              {!user && <AlumniSubmissionForm />}
               {user ? (
                 <>
                   {!profile && (
