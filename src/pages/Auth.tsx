@@ -6,13 +6,38 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { GraduationCap, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
+
+const SPECIALIZATIONS = [
+  "Software Engineering",
+  "Data Science",
+  "Product Management",
+  "UX Design",
+  "Marketing",
+  "Finance",
+  "Consulting",
+  "Healthcare",
+  "Education",
+  "Other"
+];
+
+const YEARS = Array.from({ length: 11 }, (_, i) => 2015 + i);
 
 const authSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+const signupSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  fullName: z.string().min(2, "Full name is required"),
+  graduationYear: z.string().min(1, "Graduation year is required"),
 });
 
 const Auth = () => {
@@ -21,6 +46,16 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Profile fields for signup
+  const [fullName, setFullName] = useState("");
+  const [graduationYear, setGraduationYear] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [company, setCompany] = useState("");
+  const [location, setLocation] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [bio, setBio] = useState("");
 
   useEffect(() => {
     if (user && !loading) {
@@ -28,7 +63,7 @@ const Auth = () => {
     }
   }, [user, loading, navigate]);
 
-  const handleSubmit = async (mode: "signin" | "signup") => {
+  const handleSignIn = async () => {
     const validation = authSchema.safeParse({ email, password });
     if (!validation.success) {
       toast.error(validation.error.errors[0].message);
@@ -37,26 +72,70 @@ const Auth = () => {
 
     setIsSubmitting(true);
     try {
-      const { error } = mode === "signup" 
-        ? await signUp(email, password)
-        : await signIn(email, password);
+      const { error } = await signIn(email, password);
 
       if (error) {
-        if (error.message.includes("User already registered")) {
-          toast.error("This email is already registered. Please sign in instead.");
-        } else if (error.message.includes("Invalid login credentials")) {
+        if (error.message.includes("Invalid login credentials")) {
           toast.error("Invalid email or password. Please try again.");
         } else {
           toast.error(error.message);
         }
       } else {
-        if (mode === "signup") {
-          toast.success("Account created successfully! You can now create your profile.");
-        } else {
-          toast.success("Welcome back!");
-        }
+        toast.success("Welcome back!");
         navigate("/");
       }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSignUp = async () => {
+    const validation = signupSchema.safeParse({ email, password, fullName, graduationYear });
+    if (!validation.success) {
+      toast.error(validation.error.errors[0].message);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await signUp(email, password);
+
+      if (error) {
+        if (error.message.includes("User already registered")) {
+          toast.error("This email is already registered. Please sign in instead.");
+        } else {
+          toast.error(error.message);
+        }
+        return;
+      }
+
+      // Create alumni profile after successful signup
+      if (data?.user) {
+        const { error: profileError } = await supabase
+          .from("alumni_profiles")
+          .insert({
+            user_id: data.user.id,
+            full_name: fullName.trim(),
+            email: email.toLowerCase().trim(),
+            graduation_year: parseInt(graduationYear),
+            job_title: jobTitle.trim() || null,
+            company: company.trim() || null,
+            location: location.trim() || null,
+            specialization: specialization || null,
+            linkedin_url: linkedinUrl.trim() || null,
+            bio: bio.trim() || null,
+            claimed: true,
+          });
+
+        if (profileError) {
+          console.error("Profile creation error:", profileError);
+          toast.error("Account created but profile setup failed. Please complete your profile later.");
+        } else {
+          toast.success("Account and profile created successfully!");
+        }
+      }
+      
+      navigate("/");
     } finally {
       setIsSubmitting(false);
     }
@@ -102,7 +181,7 @@ const Auth = () => {
               </TabsList>
 
               <TabsContent value="signin">
-                <form onSubmit={(e) => { e.preventDefault(); handleSubmit("signin"); }} className="space-y-4">
+                <form onSubmit={(e) => { e.preventDefault(); handleSignIn(); }} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signin-email">Email</Label>
                     <Input
@@ -133,9 +212,9 @@ const Auth = () => {
               </TabsContent>
 
               <TabsContent value="signup">
-                <form onSubmit={(e) => { e.preventDefault(); handleSubmit("signup"); }} className="space-y-4">
+                <form onSubmit={(e) => { e.preventDefault(); handleSignUp(); }} className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email">Email *</Label>
                     <Input
                       id="signup-email"
                       type="email"
@@ -146,7 +225,7 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password">Password *</Label>
                     <Input
                       id="signup-password"
                       type="password"
@@ -156,9 +235,118 @@ const Auth = () => {
                       required
                     />
                   </div>
+
+                  <div className="border-t pt-4 mt-4">
+                    <p className="text-sm text-muted-foreground mb-4">Profile Information</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Full Name *</Label>
+                    <Input
+                      id="fullName"
+                      placeholder="John Doe"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      maxLength={200}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="graduationYear">Graduation Year *</Label>
+                    <Select value={graduationYear} onValueChange={setGraduationYear}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {YEARS.map((year) => (
+                          <SelectItem key={year} value={year.toString()}>
+                            {year}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="jobTitle">Job Title</Label>
+                      <Input
+                        id="jobTitle"
+                        placeholder="Software Engineer"
+                        value={jobTitle}
+                        onChange={(e) => setJobTitle(e.target.value)}
+                        maxLength={200}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="company">Company</Label>
+                      <Input
+                        id="company"
+                        placeholder="Google"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        maxLength={200}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="location">Location</Label>
+                    <Input
+                      id="location"
+                      placeholder="San Francisco, CA"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      maxLength={200}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="specialization">Specialization</Label>
+                    <Select value={specialization} onValueChange={setSpecialization}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select specialization" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {SPECIALIZATIONS.map((spec) => (
+                          <SelectItem key={spec} value={spec}>
+                            {spec}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="linkedinUrl">LinkedIn URL</Label>
+                    <Input
+                      id="linkedinUrl"
+                      placeholder="https://linkedin.com/in/johndoe"
+                      value={linkedinUrl}
+                      onChange={(e) => setLinkedinUrl(e.target.value)}
+                      maxLength={500}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="bio">Bio</Label>
+                    <Textarea
+                      id="bio"
+                      placeholder="Tell us about yourself..."
+                      value={bio}
+                      onChange={(e) => setBio(e.target.value)}
+                      rows={3}
+                      maxLength={2000}
+                    />
+                    <p className="text-xs text-muted-foreground text-right">
+                      {bio.length}/2000
+                    </p>
+                  </div>
+
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                    Create Account
+                    Join Directory
                   </Button>
                 </form>
               </TabsContent>
