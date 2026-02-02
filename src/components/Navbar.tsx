@@ -83,30 +83,21 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            {/* Logo & Navigation */}
-            <div className="flex items-center gap-4">
-              <Link to="/" className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                  <GraduationCap className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <span className="font-display text-lg font-semibold hidden sm:block">
-                  MBA Alumni
-                </span>
-              </Link>
-
-              {/* Navigation Links */}
-              <div className="flex items-center gap-2">
-                <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
-                  <Link to="/">Directory</Link>
-                </Button>
-                <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
-                  <Link to="/community">Community</Link>
-                </Button>
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-primary-foreground" />
               </div>
-            </div>
+              <span className="font-display text-lg font-semibold hidden sm:block">
+                MBA Alumni
+              </span>
+            </Link>
 
             {/* Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
+                <Link to="/community">Community</Link>
+              </Button>
               <AlumniSubmissionForm />
               {user ? (
                 <>
@@ -157,7 +148,11 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </>
-              ) : null}
+              ) : (
+                <Button asChild>
+                  <Link to="/auth">Login</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
