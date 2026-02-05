@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { GraduationCap, Loader2 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { GraduationCap, Loader2, Clock, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -46,6 +47,8 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [signupSuccess, setSignupSuccess] = useState(false);
+  const [pendingSubmission, setPendingSubmission] = useState<string | null>(null);
   
   // Profile fields for signup
   const [fullName, setFullName] = useState("");
@@ -57,10 +60,36 @@ const Auth = () => {
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [bio, setBio] = useState("");
 
+  // Check if user has a pending submission or approved profile
   useEffect(() => {
-    if (user && !loading) {
-      navigate("/");
-    }
+    const checkUserStatus = async () => {
+      if (user && !loading) {
+        // Check if user has an approved profile
+        const { data: profile } = await supabase
+          .from("alumni_profiles")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (profile) {
+          navigate("/");
+          return;
+        }
+
+        // Check if user has a pending submission
+        const { data: submission } = await supabase
+          .from("alumni_submissions")
+          .select("status")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (submission) {
+          setPendingSubmission(submission.status);
+        }
+      }
+    };
+
+    checkUserStatus();
   }, [user, loading, navigate]);
 
   const handleSignIn = async () => {
@@ -109,10 +138,10 @@ const Auth = () => {
         return;
       }
 
-      // Create alumni profile after successful signup
+      // Create alumni submission for admin review (instead of profile directly)
       if (data?.user) {
-        const { error: profileError } = await supabase
-          .from("alumni_profiles")
+        const { error: submissionError } = await supabase
+          .from("alumni_submissions")
           .insert({
             user_id: data.user.id,
             full_name: fullName.trim(),
@@ -124,18 +153,16 @@ const Auth = () => {
             specialization: specialization || null,
             linkedin_url: linkedinUrl.trim() || null,
             bio: bio.trim() || null,
-            claimed: true,
+            status: "pending",
           });
 
-        if (profileError) {
-          console.error("Profile creation error:", profileError);
-          toast.error("Account created but profile setup failed. Please complete your profile later.");
+        if (submissionError) {
+          console.error("Submission error:", submissionError);
+          toast.error("Account created but submission failed. Please contact support.");
         } else {
-          toast.success("Account and profile created successfully!");
+          setSignupSuccess(true);
         }
       }
-      
-      navigate("/");
     } finally {
       setIsSubmitting(false);
     }
@@ -145,6 +172,117 @@ const Auth = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Show pending review message for users who already signed up
+  if (user && pendingSubmission) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="gradient-hero py-8">
+          <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-4">
+              <GraduationCap className="w-4 h-4 text-primary-foreground" />
+              <span className="text-sm font-medium text-primary-foreground">UW-Madison MBA Alumni</span>
+            </div>
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">
+              Application Status
+            </h1>
+          </div>
+        </header>
+
+        <div className="flex-1 flex items-center justify-center p-4 -mt-8">
+          <Card className="w-full max-w-md shadow-card-hover">
+            <CardContent className="pt-6">
+              <div className="text-center space-y-4">
+                {pendingSubmission === "pending" ? (
+                  <>
+                    <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto">
+                      <Clock className="w-8 h-8 text-amber-600" />
+                    </div>
+                    <h2 className="font-display text-xl font-semibold">Application Under Review</h2>
+                    <p className="text-muted-foreground">
+                      Your profile is being reviewed by our admin team. You will receive an email notification within 24-48 hours once your profile is approved.
+                    </p>
+                  </>
+                ) : pendingSubmission === "rejected" ? (
+                  <>
+                    <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto">
+                      <Clock className="w-8 h-8 text-red-600" />
+                    </div>
+                    <h2 className="font-display text-xl font-semibold">Application Not Approved</h2>
+                    <p className="text-muted-foreground">
+                      Unfortunately, your application was not approved. Please contact support for more information.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                      <CheckCircle2 className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h2 className="font-display text-xl font-semibold">Application Approved!</h2>
+                    <p className="text-muted-foreground">
+                      Your profile has been approved. Welcome to the alumni directory!
+                    </p>
+                    <Button onClick={() => navigate("/")} className="mt-4">
+                      View Directory
+                    </Button>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  // Show success message after signup
+  if (signupSuccess) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="gradient-hero py-8">
+          <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-4">
+              <GraduationCap className="w-4 h-4 text-primary-foreground" />
+              <span className="text-sm font-medium text-primary-foreground">UW-Madison MBA Alumni</span>
+            </div>
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">
+              Application Submitted!
+            </h1>
+          </div>
+        </header>
+
+        <div className="flex-1 flex items-center justify-center p-4 -mt-8">
+          <Card className="w-full max-w-md shadow-card-hover">
+            <CardContent className="pt-6">
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-8 h-8 text-green-600" />
+                </div>
+                <h2 className="font-display text-xl font-semibold">Thank You for Joining!</h2>
+                <p className="text-muted-foreground">
+                  Your profile has been submitted for review. Our admin team will review your application and you will be notified via email within <strong>24-48 hours</strong> once approved.
+                </p>
+                <Alert className="text-left mt-6">
+                  <Clock className="h-4 w-4" />
+                  <AlertTitle>What happens next?</AlertTitle>
+                  <AlertDescription>
+                    <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+                      <li>Admin reviews your profile details</li>
+                      <li>You'll receive an email notification</li>
+                      <li>Once approved, your profile will be visible in the directory</li>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+                <Button onClick={() => navigate("/")} variant="outline" className="mt-4">
+                  Return to Home
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
@@ -213,6 +351,13 @@ const Auth = () => {
 
               <TabsContent value="signup">
                 <form onSubmit={(e) => { e.preventDefault(); handleSignUp(); }} className="space-y-4 max-h-[60vh] overflow-y-auto pr-2">
+                  <Alert className="mb-4">
+                    <Clock className="h-4 w-4" />
+                    <AlertDescription className="text-sm">
+                      Your profile will be reviewed by an admin before appearing in the directory (24-48 hours).
+                    </AlertDescription>
+                  </Alert>
+
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email *</Label>
                     <Input
@@ -346,7 +491,7 @@ const Auth = () => {
 
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                    Join Directory
+                    Submit for Review
                   </Button>
                 </form>
               </TabsContent>

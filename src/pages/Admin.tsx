@@ -39,6 +39,7 @@ interface AlumniSubmission {
   bio: string | null;
   status: string;
   created_at: string;
+  user_id: string | null;
 }
 
 const Admin = () => {
@@ -81,12 +82,12 @@ const Admin = () => {
     setProcessing(submission.id);
     
     try {
-      // Create an unclaimed alumni profile with NULL user_id
-      // The profile will be claimed by the alumni using their email
+      // Create alumni profile linked to the user who submitted
+      // If user_id exists, profile is immediately claimed; otherwise unclaimed
       const { error: profileError } = await supabase
         .from("alumni_profiles")
         .insert({
-          user_id: null, // NULL for unclaimed profiles - will be set when claimed
+          user_id: submission.user_id, // Link to the auth user who submitted
           full_name: submission.full_name,
           email: submission.email,
           graduation_year: submission.graduation_year,
@@ -96,8 +97,8 @@ const Admin = () => {
           specialization: submission.specialization,
           linkedin_url: submission.linkedin_url,
           bio: submission.bio,
-          claimed: false, // Profile is unclaimed, ready for alumni to claim
-          claim_token: crypto.randomUUID(), // Generate a claim token
+          claimed: submission.user_id ? true : false, // Claimed if user_id exists
+          claim_token: submission.user_id ? null : crypto.randomUUID(),
         });
 
       if (profileError) throw profileError;
@@ -110,7 +111,11 @@ const Admin = () => {
 
       if (updateError) throw updateError;
 
-      toast.success(`${submission.full_name} has been approved! They can now claim their profile using their email.`);
+      const message = submission.user_id 
+        ? `${submission.full_name} has been approved and their profile is now live!`
+        : `${submission.full_name} has been approved! They can claim their profile using their email.`;
+      
+      toast.success(message);
       fetchSubmissions();
       setSelectedSubmission(null);
     } catch (error: any) {

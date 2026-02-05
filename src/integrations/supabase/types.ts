@@ -85,6 +85,7 @@ export type Database = {
           location: string | null
           specialization: string | null
           status: string
+          user_id: string | null
         }
         Insert: {
           bio?: string | null
@@ -99,6 +100,7 @@ export type Database = {
           location?: string | null
           specialization?: string | null
           status?: string
+          user_id?: string | null
         }
         Update: {
           bio?: string | null
@@ -113,6 +115,7 @@ export type Database = {
           location?: string | null
           specialization?: string | null
           status?: string
+          user_id?: string | null
         }
         Relationships: []
       }
