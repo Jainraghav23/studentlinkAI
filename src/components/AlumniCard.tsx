@@ -83,7 +83,10 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                window.open(alumni.linkedin_url!, "_blank", "noopener,noreferrer");
+                const url = alumni.linkedin_url!.startsWith("http") 
+                  ? alumni.linkedin_url! 
+                  : `https://${alumni.linkedin_url}`;
+                window.open(url, "_blank", "noopener,noreferrer");
               }}
               className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
             >
