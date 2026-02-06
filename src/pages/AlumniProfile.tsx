@@ -197,15 +197,18 @@ const AlumniProfile = () => {
                     <h3 className="font-display text-lg font-semibold text-foreground mb-3">
                       Connect
                     </h3>
-                    <Button asChild className="w-full" variant="outline">
-                      <a
-                        href={alumni.linkedin_url.startsWith("http") ? alumni.linkedin_url : `https://${alumni.linkedin_url}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Linkedin className="w-4 h-4 mr-2" />
-                        View LinkedIn Profile
-                      </a>
+                    <Button 
+                      className="w-full" 
+                      variant="outline"
+                      onClick={() => {
+                        const url = alumni.linkedin_url!.startsWith("http") 
+                          ? alumni.linkedin_url! 
+                          : `https://${alumni.linkedin_url}`;
+                        window.open(url, "_blank", "noopener,noreferrer");
+                      }}
+                    >
+                      <Linkedin className="w-4 h-4 mr-2" />
+                      View LinkedIn Profile
                     </Button>
                   </CardContent>
                 </Card>
