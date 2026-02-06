@@ -199,7 +199,7 @@ const AlumniProfile = () => {
                     </h3>
                     <Button asChild className="w-full" variant="outline">
                       <a
-                        href={alumni.linkedin_url}
+                        href={alumni.linkedin_url.startsWith("http") ? alumni.linkedin_url : `https://${alumni.linkedin_url}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
