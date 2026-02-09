@@ -20,11 +20,11 @@ export const PostList = () => {
       // Fetch author profiles
       const userIds = [...new Set(postsData.map((p) => p.user_id))];
       const { data: profiles } = await supabase
-        .from("alumni_profiles")
+        .from("alumni_profiles_public" as any)
         .select("user_id, full_name, avatar_url")
         .in("user_id", userIds);
 
-      const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
+      const profileMap = new Map((profiles as any[])?.map((p: any) => [p.user_id, p]) || []);
 
       return postsData.map((post) => ({
         ...post,

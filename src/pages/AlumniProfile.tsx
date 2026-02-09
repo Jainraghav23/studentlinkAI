@@ -23,8 +23,9 @@ const AlumniProfile = () => {
   const { data: alumni, isLoading, error } = useQuery({
     queryKey: ["alumni-profile", id],
     queryFn: async () => {
+      // Use the public view which excludes sensitive columns (email, claim_token)
       const { data, error } = await supabase
-        .from("alumni_profiles")
+        .from("alumni_profiles_public" as any)
         .select(
           "id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url"
         )
@@ -32,7 +33,7 @@ const AlumniProfile = () => {
         .maybeSingle();
 
       if (error) throw error;
-      return data;
+      return data as any;
     },
     enabled: !!id,
   });
