@@ -31,14 +31,14 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
 
   const fetchAlumni = async () => {
     setLoading(true);
-    // Explicitly select only non-sensitive columns (excluding email, claim_token, user_id)
+    // Use the public view which excludes sensitive columns (email, claim_token)
     const { data, error } = await supabase
-      .from("alumni_profiles")
+      .from("alumni_profiles_public" as any)
       .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url")
       .order("graduation_year", { ascending: false });
 
     if (!error && data) {
-      setAlumni(data);
+      setAlumni(data as unknown as AlumniProfile[]);
     }
     setLoading(false);
   };
