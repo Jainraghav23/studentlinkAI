@@ -12,6 +12,7 @@ interface Event {
   event_type: string;
   max_attendees: number | null;
   contact_email: string | null;
+  image_url: string | null;
   status: string;
 }
 
@@ -23,7 +24,17 @@ interface EventCardProps {
 
 export function EventCard({ event, isPending, isPast }: EventCardProps) {
   return (
-    <Card className={`shadow-card ${isPast ? "opacity-70" : ""}`}>
+    <Card className={`shadow-card overflow-hidden ${isPast ? "opacity-70" : ""}`}>
+      {event.image_url && (
+        <div className="w-full h-40 overflow-hidden">
+          <img
+            src={event.image_url}
+            alt={event.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      )}
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="font-display text-lg leading-tight">
