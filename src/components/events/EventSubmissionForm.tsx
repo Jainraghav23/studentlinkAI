@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader2, ImagePlus, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface EventSubmissionFormProps {
@@ -32,6 +32,9 @@ export function EventSubmissionForm({ open, onOpenChange }: EventSubmissionFormP
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -43,6 +46,26 @@ export function EventSubmissionForm({ open, onOpenChange }: EventSubmissionFormP
     contact_email: "",
   });
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be under 5MB");
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -54,6 +77,23 @@ export function EventSubmissionForm({ open, onOpenChange }: EventSubmissionFormP
 
     setLoading(true);
     try {
+      let imageUrl: string | null = null;
+
+      // Upload image if provided
+      if (imageFile) {
+        const fileExt = imageFile.name.split(".").pop();
+        const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from("event-images")
+          .upload(filePath, imageFile);
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage
+          .from("event-images")
+          .getPublicUrl(filePath);
+        imageUrl = urlData.publicUrl;
+      }
+
       const eventDateTime = form.event_time
         ? `${form.event_date}T${form.event_time}`
         : `${form.event_date}T09:00`;
@@ -67,12 +107,14 @@ export function EventSubmissionForm({ open, onOpenChange }: EventSubmissionFormP
         event_type: form.event_type,
         max_attendees: form.max_attendees ? parseInt(form.max_attendees) : null,
         contact_email: form.contact_email.trim().slice(0, 255) || null,
+        image_url: imageUrl,
       } as any);
 
       if (error) throw error;
 
       toast.success("Event submitted for approval! You'll be notified once it's reviewed.");
       setForm({ title: "", description: "", event_date: "", event_time: "", location: "", event_type: "in-person", max_attendees: "", contact_email: "" });
+      removeImage();
       onOpenChange(false);
       queryClient.invalidateQueries({ queryKey: ["events"] });
     } catch (err: any) {
@@ -184,6 +226,40 @@ export function EventSubmissionForm({ open, onOpenChange }: EventSubmissionFormP
               placeholder="your@email.com"
               maxLength={255}
             />
+          </div>
+          <div>
+            <Label>Event Image</Label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            {imagePreview ? (
+              <div className="relative mt-2 rounded-lg overflow-hidden border">
+                <img src={imagePreview} alt="Preview" className="w-full h-40 object-cover" />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-2 right-2 h-7 w-7"
+                  onClick={removeImage}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full mt-1 h-20 border-dashed"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <ImagePlus className="w-5 h-5 mr-2" />
+                Add Event Image
+              </Button>
+            )}
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}

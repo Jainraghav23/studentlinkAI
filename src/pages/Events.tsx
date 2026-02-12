@@ -19,6 +19,7 @@ interface Event {
   event_type: string;
   max_attendees: number | null;
   contact_email: string | null;
+  image_url: string | null;
   status: string;
   created_at: string;
   user_id: string;
