@@ -22,9 +22,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft, ShieldAlert, Users, FileText } from "lucide-react";
+import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft, ShieldAlert, Users, FileText, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import AdminUserManagement from "@/components/AdminUserManagement";
+import AdminEventManagement from "@/components/admin/AdminEventManagement";
 
 interface AlumniSubmission {
   id: string;
@@ -220,10 +221,14 @@ const Admin = () => {
       {/* Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="submissions" className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-lg grid-cols-3">
             <TabsTrigger value="submissions" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               Submissions
+            </TabsTrigger>
+            <TabsTrigger value="events" className="flex items-center gap-2">
+              <CalendarDays className="w-4 h-4" />
+              Events
             </TabsTrigger>
             <TabsTrigger value="admins" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
@@ -321,6 +326,10 @@ const Admin = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="events">
+            <AdminEventManagement />
           </TabsContent>
 
           <TabsContent value="admins">

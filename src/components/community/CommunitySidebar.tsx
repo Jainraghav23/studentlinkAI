@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Users, Home, MessageSquare, User } from "lucide-react";
+import { Users, Home, MessageSquare, User, CalendarDays } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { PostForm } from "@/components/posts/PostForm";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import {
 const navigationItems = [
   { icon: Home, label: "Home", href: "/" },
   { icon: MessageSquare, label: "Community", href: "/community" },
+  { icon: CalendarDays, label: "Events", href: "/events" },
   { icon: Users, label: "Directory", href: "/#directory" },
 ];
 

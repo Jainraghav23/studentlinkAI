@@ -154,6 +154,51 @@ export type Database = {
           },
         ]
       }
+      events: {
+        Row: {
+          contact_email: string | null
+          created_at: string
+          description: string
+          event_date: string
+          event_type: string
+          id: string
+          location: string
+          max_attendees: number | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contact_email?: string | null
+          created_at?: string
+          description: string
+          event_date: string
+          event_type?: string
+          id?: string
+          location: string
+          max_attendees?: number | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contact_email?: string | null
+          created_at?: string
+          description?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+          location?: string
+          max_attendees?: number | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       likes: {
         Row: {
           created_at: string
