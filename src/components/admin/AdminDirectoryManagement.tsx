@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -21,7 +23,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Trash2, Search, BookOpen } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Loader2, Trash2, Search, BookOpen, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
 interface AlumniProfile {
@@ -32,6 +42,9 @@ interface AlumniProfile {
   job_title: string | null;
   company: string | null;
   location: string | null;
+  specialization: string | null;
+  linkedin_url: string | null;
+  bio: string | null;
   claimed: boolean | null;
   created_at: string;
 }
@@ -42,12 +55,15 @@ const AdminDirectoryManagement = () => {
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<AlumniProfile | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [editTarget, setEditTarget] = useState<AlumniProfile | null>(null);
+  const [editForm, setEditForm] = useState<Partial<AlumniProfile>>({});
+  const [saving, setSaving] = useState(false);
 
   const fetchProfiles = async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("alumni_profiles")
-      .select("id, full_name, email, graduation_year, job_title, company, location, claimed, created_at")
+      .select("id, full_name, email, graduation_year, job_title, company, location, specialization, linkedin_url, bio, claimed, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -79,6 +95,50 @@ const AdminDirectoryManagement = () => {
       toast.error(error.message || "Failed to remove profile");
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const openEdit = (profile: AlumniProfile) => {
+    setEditTarget(profile);
+    setEditForm({
+      full_name: profile.full_name,
+      email: profile.email,
+      graduation_year: profile.graduation_year,
+      job_title: profile.job_title,
+      company: profile.company,
+      location: profile.location,
+      specialization: profile.specialization,
+      linkedin_url: profile.linkedin_url,
+      bio: profile.bio,
+    });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editTarget) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("alumni_profiles")
+        .update({
+          full_name: editForm.full_name!,
+          email: editForm.email,
+          graduation_year: editForm.graduation_year!,
+          job_title: editForm.job_title,
+          company: editForm.company,
+          location: editForm.location,
+          specialization: editForm.specialization,
+          linkedin_url: editForm.linkedin_url,
+          bio: editForm.bio,
+        })
+        .eq("id", editTarget.id);
+      if (error) throw error;
+      toast.success(`${editForm.full_name} updated successfully`);
+      setEditTarget(null);
+      fetchProfiles();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update profile");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -155,14 +215,23 @@ const AdminDirectoryManagement = () => {
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        onClick={() => setDeleteTarget(profile)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <div className="flex justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openEdit(profile)}
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => setDeleteTarget(profile)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -192,6 +261,60 @@ const AdminDirectoryManagement = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Edit Profile Dialog */}
+      <Dialog open={!!editTarget} onOpenChange={() => setEditTarget(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl">Edit Alumni Profile</DialogTitle>
+            <DialogDescription>Update the profile details below</DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Full Name</Label>
+              <Input value={editForm.full_name || ""} onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input value={editForm.email || ""} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Graduation Year</Label>
+              <Input type="number" value={editForm.graduation_year || ""} onChange={(e) => setEditForm({ ...editForm, graduation_year: parseInt(e.target.value) || 0 })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Job Title</Label>
+              <Input value={editForm.job_title || ""} onChange={(e) => setEditForm({ ...editForm, job_title: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Company</Label>
+              <Input value={editForm.company || ""} onChange={(e) => setEditForm({ ...editForm, company: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Location</Label>
+              <Input value={editForm.location || ""} onChange={(e) => setEditForm({ ...editForm, location: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Specialization</Label>
+              <Input value={editForm.specialization || ""} onChange={(e) => setEditForm({ ...editForm, specialization: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>LinkedIn URL</Label>
+              <Input value={editForm.linkedin_url || ""} onChange={(e) => setEditForm({ ...editForm, linkedin_url: e.target.value })} />
+            </div>
+            <div className="col-span-2 space-y-2">
+              <Label>Bio</Label>
+              <Textarea value={editForm.bio || ""} onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })} rows={3} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditTarget(null)}>Cancel</Button>
+            <Button onClick={handleSaveEdit} disabled={saving || !editForm.full_name}>
+              {saving ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Saving...</> : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
