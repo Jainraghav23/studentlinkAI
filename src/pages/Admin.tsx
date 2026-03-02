@@ -22,11 +22,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft, ShieldAlert, Users, FileText, CalendarDays, BookOpen } from "lucide-react";
+import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft, ShieldAlert, Users, FileText, CalendarDays, BookOpen, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import AdminUserManagement from "@/components/AdminUserManagement";
 import AdminEventManagement from "@/components/admin/AdminEventManagement";
 import AdminDirectoryManagement from "@/components/admin/AdminDirectoryManagement";
+import AdminInterviewManagement from "@/components/admin/AdminInterviewManagement";
 
 interface AlumniSubmission {
   id: string;
@@ -222,7 +223,7 @@ const Admin = () => {
       {/* Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="submissions" className="space-y-6">
-          <TabsList className="grid w-full max-w-2xl grid-cols-4">
+          <TabsList className="grid w-full max-w-3xl grid-cols-5">
             <TabsTrigger value="submissions" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               Submissions
@@ -234,6 +235,10 @@ const Admin = () => {
             <TabsTrigger value="events" className="flex items-center gap-2">
               <CalendarDays className="w-4 h-4" />
               Events
+            </TabsTrigger>
+            <TabsTrigger value="interviews" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              Interviews
             </TabsTrigger>
             <TabsTrigger value="admins" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
@@ -339,6 +344,10 @@ const Admin = () => {
 
           <TabsContent value="events">
             <AdminEventManagement />
+          </TabsContent>
+
+          <TabsContent value="interviews">
+            <AdminInterviewManagement />
           </TabsContent>
 
           <TabsContent value="admins">

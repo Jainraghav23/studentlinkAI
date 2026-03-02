@@ -12,6 +12,7 @@ import MyProfile from "./pages/MyProfile";
 import Community from "./pages/Community";
 import AlumniProfile from "./pages/AlumniProfile";
 import Events from "./pages/Events";
+import Interviews from "./pages/Interviews";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/my-profile" element={<MyProfile />} />
               <Route path="/community" element={<Community />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/interviews" element={<Interviews />} />
               <Route path="/alumni/:id" element={<AlumniProfile />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

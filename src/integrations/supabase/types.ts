@@ -202,6 +202,57 @@ export type Database = {
         }
         Relationships: []
       }
+      interview_experiences: {
+        Row: {
+          company: string
+          created_at: string
+          difficulty: string
+          experience: string
+          id: string
+          interview_date: string | null
+          questions: string | null
+          result: string | null
+          role: string
+          rounds: number | null
+          status: string
+          tips: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          difficulty?: string
+          experience: string
+          id?: string
+          interview_date?: string | null
+          questions?: string | null
+          result?: string | null
+          role: string
+          rounds?: number | null
+          status?: string
+          tips?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          difficulty?: string
+          experience?: string
+          id?: string
+          interview_date?: string | null
+          questions?: string | null
+          result?: string | null
+          role?: string
+          rounds?: number | null
+          status?: string
+          tips?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       likes: {
         Row: {
           created_at: string
