@@ -22,12 +22,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft, ShieldAlert, Users, FileText, CalendarDays, BookOpen, MessageSquare } from "lucide-react";
+import { GraduationCap, Loader2, Check, X, Eye, ArrowLeft, ShieldAlert, Users, FileText, CalendarDays, BookOpen, MessageSquare, Handshake } from "lucide-react";
 import { toast } from "sonner";
 import AdminUserManagement from "@/components/AdminUserManagement";
 import AdminEventManagement from "@/components/admin/AdminEventManagement";
 import AdminDirectoryManagement from "@/components/admin/AdminDirectoryManagement";
 import AdminInterviewManagement from "@/components/admin/AdminInterviewManagement";
+import AdminReferralManagement from "@/components/admin/AdminReferralManagement";
 
 interface AlumniSubmission {
   id: string;
@@ -223,7 +224,7 @@ const Admin = () => {
       {/* Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="submissions" className="space-y-6">
-          <TabsList className="grid w-full max-w-3xl grid-cols-5">
+          <TabsList className="grid w-full max-w-4xl grid-cols-6">
             <TabsTrigger value="submissions" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               Submissions
@@ -239,6 +240,10 @@ const Admin = () => {
             <TabsTrigger value="interviews" className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
               Interviews
+            </TabsTrigger>
+            <TabsTrigger value="referrals" className="flex items-center gap-2">
+              <Handshake className="w-4 h-4" />
+              Referrals
             </TabsTrigger>
             <TabsTrigger value="admins" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
@@ -348,6 +353,10 @@ const Admin = () => {
 
           <TabsContent value="interviews">
             <AdminInterviewManagement />
+          </TabsContent>
+
+          <TabsContent value="referrals">
+            <AdminReferralManagement />
           </TabsContent>
 
           <TabsContent value="admins">
