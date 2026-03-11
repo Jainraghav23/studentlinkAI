@@ -60,6 +60,7 @@ const Interviews = () => {
   }, [interviews, search, difficulty, result]);
 
   return (
+    <AuthGate title="Interview Experiences">
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
 
