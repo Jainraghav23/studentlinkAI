@@ -10,6 +10,7 @@ import { ReferralFilters } from "@/components/referrals/ReferralFilters";
 import { Button } from "@/components/ui/button";
 import { HandshakeIcon, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AuthGate } from "@/components/AuthGate";
 
 const Referrals = () => {
   const { user } = useAuth();
@@ -58,6 +59,7 @@ const Referrals = () => {
   }, [referrals, search, type]);
 
   return (
+    <AuthGate title="Job Referrals">
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
 
@@ -115,6 +117,7 @@ const Referrals = () => {
       <Footer />
       <ReferralSubmissionForm open={showForm} onOpenChange={setShowForm} />
     </div>
+    </AuthGate>
   );
 };
 

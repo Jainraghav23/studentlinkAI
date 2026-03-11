@@ -10,6 +10,7 @@ import { InterviewFilters } from "@/components/interviews/InterviewFilters";
 import { Button } from "@/components/ui/button";
 import { MessageSquarePlus, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AuthGate } from "@/components/AuthGate";
 
 const Interviews = () => {
   const { user } = useAuth();
@@ -59,6 +60,7 @@ const Interviews = () => {
   }, [interviews, search, difficulty, result]);
 
   return (
+    <AuthGate title="Interview Experiences">
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
 
@@ -120,6 +122,7 @@ const Interviews = () => {
       <Footer />
       <InterviewSubmissionForm open={showForm} onOpenChange={setShowForm} />
     </div>
+    </AuthGate>
   );
 };
 

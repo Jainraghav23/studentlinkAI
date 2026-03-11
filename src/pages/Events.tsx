@@ -9,6 +9,7 @@ import { EventCard } from "@/components/events/EventCard";
 import { Button } from "@/components/ui/button";
 import { CalendarPlus, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AuthGate } from "@/components/AuthGate";
 
 interface Event {
   id: string;
@@ -75,6 +76,7 @@ const Events = () => {
   });
 
   return (
+    <AuthGate title="Events">
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
 
@@ -160,6 +162,7 @@ const Events = () => {
 
       <EventSubmissionForm open={showForm} onOpenChange={setShowForm} />
     </div>
+    </AuthGate>
   );
 };
 
