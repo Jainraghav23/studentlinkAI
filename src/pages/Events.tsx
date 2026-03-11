@@ -9,6 +9,7 @@ import { EventCard } from "@/components/events/EventCard";
 import { Button } from "@/components/ui/button";
 import { CalendarPlus, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AuthGate } from "@/components/AuthGate";
 
 interface Event {
   id: string;

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { CommunitySidebar } from "@/components/community/CommunitySidebar";
+import { AuthGate } from "@/components/AuthGate";
 import {
   SidebarProvider,
   SidebarTrigger,
