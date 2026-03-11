@@ -59,6 +59,7 @@ const Referrals = () => {
   }, [referrals, search, type]);
 
   return (
+    <AuthGate title="Job Referrals">
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
 
