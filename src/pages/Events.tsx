@@ -162,6 +162,7 @@ const Events = () => {
 
       <EventSubmissionForm open={showForm} onOpenChange={setShowForm} />
     </div>
+    </AuthGate>
   );
 };
 

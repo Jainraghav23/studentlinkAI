@@ -122,6 +122,7 @@ const Interviews = () => {
       <Footer />
       <InterviewSubmissionForm open={showForm} onOpenChange={setShowForm} />
     </div>
+    </AuthGate>
   );
 };
 

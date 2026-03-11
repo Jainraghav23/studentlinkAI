@@ -117,6 +117,7 @@ const Referrals = () => {
       <Footer />
       <ReferralSubmissionForm open={showForm} onOpenChange={setShowForm} />
     </div>
+    </AuthGate>
   );
 };
 

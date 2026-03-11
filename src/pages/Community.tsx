@@ -70,6 +70,7 @@ const Community = () => {
       </SidebarProvider>
       <Footer />
     </div>
+    </AuthGate>
   );
 };
 
