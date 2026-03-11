@@ -10,6 +10,7 @@ import { ReferralFilters } from "@/components/referrals/ReferralFilters";
 import { Button } from "@/components/ui/button";
 import { HandshakeIcon, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AuthGate } from "@/components/AuthGate";
 
 const Referrals = () => {
   const { user } = useAuth();
