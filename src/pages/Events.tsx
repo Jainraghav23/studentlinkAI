@@ -76,6 +76,7 @@ const Events = () => {
   });
 
   return (
+    <AuthGate title="Events">
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
 
