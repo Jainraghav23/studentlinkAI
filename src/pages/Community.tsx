@@ -19,6 +19,7 @@ const Community = () => {
   const queryClient = useQueryClient();
 
   return (
+    <AuthGate title="Community">
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <SidebarProvider>
