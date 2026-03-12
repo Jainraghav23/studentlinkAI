@@ -79,6 +79,8 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
         linkedin_url: existingProfile.linkedin_url || "",
         email: existingProfile.email || "",
         bio: existingProfile.bio || "",
+        candidate_type: existingProfile.candidate_type || "domestic",
+        country: existingProfile.country || "",
       });
       setAvatarUrl(existingProfile.avatar_url);
     } else {
