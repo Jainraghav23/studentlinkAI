@@ -26,8 +26,8 @@ interface ProfileFormProps {
     email: string | null;
     bio: string | null;
     avatar_url: string | null;
-    candidate_type: string | null;
-    country: string | null;
+    candidate_type?: string | null;
+    country?: string | null;
   } | null;
   onSuccess: () => void;
 }
