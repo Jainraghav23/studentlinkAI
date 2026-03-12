@@ -233,6 +233,8 @@ Deno.serve(async (req) => {
       specialization: sanitizeString(body.specialization),
       linkedin_url: sanitizeString(body.linkedin_url),
       bio: sanitizeString(body.bio),
+      candidate_type: body.candidate_type === "international" ? "international" : "domestic",
+      country: body.candidate_type === "international" ? sanitizeString(body.country) : null,
     });
 
     if (error) {
