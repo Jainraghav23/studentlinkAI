@@ -105,6 +105,8 @@ export function AlumniSubmissionForm() {
         specialization: "",
         linkedin_url: "",
         bio: "",
+        candidate_type: "",
+        country: "",
         website: ""
       });
       setOpen(false);
