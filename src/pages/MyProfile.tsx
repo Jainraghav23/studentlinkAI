@@ -39,6 +39,8 @@ interface AlumniProfile {
   bio: string | null;
   avatar_url: string | null;
   claimed: boolean | null;
+  candidate_type: string | null;
+  country: string | null;
 }
 
 const SPECIALIZATIONS = [
