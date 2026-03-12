@@ -18,9 +18,11 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          candidate_type: string | null
           claim_token: string | null
           claimed: boolean | null
           company: string | null
+          country: string | null
           created_at: string
           email: string | null
           full_name: string
@@ -36,9 +38,11 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          candidate_type?: string | null
           claim_token?: string | null
           claimed?: boolean | null
           company?: string | null
+          country?: string | null
           created_at?: string
           email?: string | null
           full_name: string
@@ -54,9 +58,11 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          candidate_type?: string | null
           claim_token?: string | null
           claimed?: boolean | null
           company?: string | null
+          country?: string | null
           created_at?: string
           email?: string | null
           full_name?: string
@@ -74,7 +80,9 @@ export type Database = {
       alumni_submissions: {
         Row: {
           bio: string | null
+          candidate_type: string | null
           company: string | null
+          country: string | null
           created_at: string
           email: string
           full_name: string
@@ -89,7 +97,9 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          candidate_type?: string | null
           company?: string | null
+          country?: string | null
           created_at?: string
           email: string
           full_name: string
@@ -104,7 +114,9 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          candidate_type?: string | null
           company?: string | null
+          country?: string | null
           created_at?: string
           email?: string
           full_name?: string
