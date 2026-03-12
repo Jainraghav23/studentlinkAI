@@ -125,6 +125,8 @@ const MyProfile = () => {
         email: data.email || "",
         bio: data.bio || "",
         avatar_url: data.avatar_url || "",
+        candidate_type: data.candidate_type || "domestic",
+        country: data.country || "",
       });
     }
     setLoading(false);
