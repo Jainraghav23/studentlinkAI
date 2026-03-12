@@ -94,6 +94,8 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
         linkedin_url: "",
         email: user?.email || "",
         bio: "",
+        candidate_type: "domestic",
+        country: "",
       });
       setAvatarUrl(null);
     }
