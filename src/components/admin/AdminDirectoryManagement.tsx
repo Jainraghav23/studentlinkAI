@@ -112,6 +112,8 @@ const AdminDirectoryManagement = () => {
       specialization: profile.specialization,
       linkedin_url: profile.linkedin_url,
       bio: profile.bio,
+      candidate_type: profile.candidate_type,
+      country: profile.country,
     });
   };
 
