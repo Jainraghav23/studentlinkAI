@@ -46,6 +46,8 @@ interface AlumniProfile {
   linkedin_url: string | null;
   bio: string | null;
   claimed: boolean | null;
+  candidate_type: string | null;
+  country: string | null;
   created_at: string;
 }
 
