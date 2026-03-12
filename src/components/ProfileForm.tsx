@@ -26,6 +26,8 @@ interface ProfileFormProps {
     email: string | null;
     bio: string | null;
     avatar_url: string | null;
+    candidate_type?: string | null;
+    country?: string | null;
   } | null;
   onSuccess: () => void;
 }
@@ -61,6 +63,8 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
     linkedin_url: "",
     email: "",
     bio: "",
+    candidate_type: "domestic",
+    country: "",
   });
 
   useEffect(() => {
@@ -75,6 +79,8 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
         linkedin_url: existingProfile.linkedin_url || "",
         email: existingProfile.email || "",
         bio: existingProfile.bio || "",
+        candidate_type: existingProfile.candidate_type || "domestic",
+        country: existingProfile.country || "",
       });
       setAvatarUrl(existingProfile.avatar_url);
     } else {
@@ -88,6 +94,8 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
         linkedin_url: "",
         email: user?.email || "",
         bio: "",
+        candidate_type: "domestic",
+        country: "",
       });
       setAvatarUrl(null);
     }
@@ -159,6 +167,8 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
         email: formData.email.trim() || null,
         bio: formData.bio.trim() || null,
         avatar_url: avatarUrl,
+        candidate_type: formData.candidate_type || "domestic",
+        country: formData.candidate_type === "international" ? (formData.country.trim() || null) : null,
       };
 
       if (existingProfile) {
@@ -349,6 +359,37 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
               />
             </div>
           </div>
+
+          {/* Candidate Type */}
+          <div className="space-y-2">
+            <Label htmlFor="candidate_type">Domestic or International? *</Label>
+            <Select
+              value={formData.candidate_type}
+              onValueChange={(value) => setFormData({ ...formData, candidate_type: value, country: value === "domestic" ? "" : formData.country })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select candidate type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="domestic">Domestic</SelectItem>
+                <SelectItem value="international">International</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {formData.candidate_type === "international" && (
+            <div className="space-y-2">
+              <Label htmlFor="country">Country *</Label>
+              <Input
+                id="country"
+                value={formData.country}
+                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                placeholder="e.g. India, China, Brazil"
+                maxLength={100}
+                required
+              />
+            </div>
+          )}
 
           {/* Bio */}
           <div className="space-y-2">

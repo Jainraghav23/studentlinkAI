@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import {
   Table,
@@ -46,6 +47,8 @@ interface AlumniProfile {
   linkedin_url: string | null;
   bio: string | null;
   claimed: boolean | null;
+  candidate_type: string | null;
+  country: string | null;
   created_at: string;
 }
 
@@ -63,7 +66,7 @@ const AdminDirectoryManagement = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("alumni_profiles")
-      .select("id, full_name, email, graduation_year, job_title, company, location, specialization, linkedin_url, bio, claimed, created_at")
+      .select("id, full_name, email, graduation_year, job_title, company, location, specialization, linkedin_url, bio, claimed, candidate_type, country, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -110,6 +113,8 @@ const AdminDirectoryManagement = () => {
       specialization: profile.specialization,
       linkedin_url: profile.linkedin_url,
       bio: profile.bio,
+      candidate_type: profile.candidate_type,
+      country: profile.country,
     });
   };
 
@@ -129,6 +134,8 @@ const AdminDirectoryManagement = () => {
           specialization: editForm.specialization,
           linkedin_url: editForm.linkedin_url,
           bio: editForm.bio,
+          candidate_type: editForm.candidate_type || "domestic",
+          country: editForm.candidate_type === "international" ? editForm.country : null,
         })
         .eq("id", editTarget.id);
       if (error) throw error;
@@ -302,6 +309,27 @@ const AdminDirectoryManagement = () => {
               <Label>LinkedIn URL</Label>
               <Input value={editForm.linkedin_url || ""} onChange={(e) => setEditForm({ ...editForm, linkedin_url: e.target.value })} />
             </div>
+            <div className="col-span-2 space-y-2">
+              <Label>Candidate Type</Label>
+              <Select
+                value={editForm.candidate_type || "domestic"}
+                onValueChange={(value) => setEditForm({ ...editForm, candidate_type: value, country: value === "domestic" ? null : editForm.country })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="domestic">Domestic</SelectItem>
+                  <SelectItem value="international">International</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {editForm.candidate_type === "international" && (
+              <div className="col-span-2 space-y-2">
+                <Label>Country</Label>
+                <Input value={editForm.country || ""} onChange={(e) => setEditForm({ ...editForm, country: e.target.value })} />
+              </div>
+            )}
             <div className="col-span-2 space-y-2">
               <Label>Bio</Label>
               <Textarea value={editForm.bio || ""} onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })} rows={3} />
