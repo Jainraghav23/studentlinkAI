@@ -84,6 +84,8 @@ const MyProfile = () => {
     email: "",
     bio: "",
     avatar_url: "",
+    candidate_type: "domestic",
+    country: "",
   });
 
   useEffect(() => {
