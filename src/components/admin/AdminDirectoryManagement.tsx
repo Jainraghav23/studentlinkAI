@@ -133,6 +133,8 @@ const AdminDirectoryManagement = () => {
           specialization: editForm.specialization,
           linkedin_url: editForm.linkedin_url,
           bio: editForm.bio,
+          candidate_type: editForm.candidate_type || "domestic",
+          country: editForm.candidate_type === "international" ? editForm.country : null,
         })
         .eq("id", editTarget.id);
       if (error) throw error;
