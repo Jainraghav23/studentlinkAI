@@ -39,6 +39,8 @@ interface AlumniProfile {
   bio: string | null;
   avatar_url: string | null;
   claimed: boolean | null;
+  candidate_type: string | null;
+  country: string | null;
 }
 
 const SPECIALIZATIONS = [
@@ -82,6 +84,8 @@ const MyProfile = () => {
     email: "",
     bio: "",
     avatar_url: "",
+    candidate_type: "domestic",
+    country: "",
   });
 
   useEffect(() => {
@@ -121,6 +125,8 @@ const MyProfile = () => {
         email: data.email || "",
         bio: data.bio || "",
         avatar_url: data.avatar_url || "",
+        candidate_type: data.candidate_type || "domestic",
+        country: data.country || "",
       });
     }
     setLoading(false);
@@ -205,6 +211,8 @@ const MyProfile = () => {
           email: formData.email.trim() || null,
           bio: formData.bio.trim() || null,
           avatar_url: formData.avatar_url || null,
+          candidate_type: formData.candidate_type || "domestic",
+          country: formData.candidate_type === "international" ? (formData.country.trim() || null) : null,
         })
         .eq("id", profile.id)
         .eq("user_id", user.id);
@@ -539,6 +547,48 @@ const MyProfile = () => {
                       />
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* Candidate Type */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Candidate Type</CardTitle>
+                  <CardDescription>Are you a domestic or international candidate?</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="candidate_type">Domestic or International? *</Label>
+                    <Select
+                      value={formData.candidate_type}
+                      onValueChange={(value) => {
+                        setFormData(prev => ({ ...prev, candidate_type: value, country: value === "domestic" ? "" : prev.country }));
+                        setHasChanges(true);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select candidate type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="domestic">Domestic</SelectItem>
+                        <SelectItem value="international">International</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {formData.candidate_type === "international" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="country">Country *</Label>
+                      <Input
+                        id="country"
+                        value={formData.country}
+                        onChange={(e) => handleInputChange("country", e.target.value)}
+                        placeholder="e.g. India, China, Brazil"
+                        maxLength={100}
+                        required
+                      />
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
