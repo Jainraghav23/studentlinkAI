@@ -550,6 +550,48 @@ const MyProfile = () => {
                 </CardContent>
               </Card>
 
+              {/* Candidate Type */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Candidate Type</CardTitle>
+                  <CardDescription>Are you a domestic or international candidate?</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="candidate_type">Domestic or International? *</Label>
+                    <Select
+                      value={formData.candidate_type}
+                      onValueChange={(value) => {
+                        setFormData(prev => ({ ...prev, candidate_type: value, country: value === "domestic" ? "" : prev.country }));
+                        setHasChanges(true);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select candidate type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="domestic">Domestic</SelectItem>
+                        <SelectItem value="international">International</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {formData.candidate_type === "international" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="country">Country *</Label>
+                      <Input
+                        id="country"
+                        value={formData.country}
+                        onChange={(e) => handleInputChange("country", e.target.value)}
+                        placeholder="e.g. India, China, Brazil"
+                        maxLength={100}
+                        required
+                      />
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
               {/* Bio */}
               <Card>
                 <CardHeader>
