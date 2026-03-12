@@ -37,6 +37,8 @@ export function AlumniSubmissionForm() {
     specialization: "",
     linkedin_url: "",
     bio: "",
+    candidate_type: "",
+    country: "",
     website: "" // Honeypot field - bots will fill this, humans won't see it
   });
 
