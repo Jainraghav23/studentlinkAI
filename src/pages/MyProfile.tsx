@@ -211,6 +211,8 @@ const MyProfile = () => {
           email: formData.email.trim() || null,
           bio: formData.bio.trim() || null,
           avatar_url: formData.avatar_url || null,
+          candidate_type: formData.candidate_type || "domestic",
+          country: formData.candidate_type === "international" ? (formData.country.trim() || null) : null,
         })
         .eq("id", profile.id)
         .eq("user_id", user.id);
