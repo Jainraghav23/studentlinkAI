@@ -309,6 +309,27 @@ const AdminDirectoryManagement = () => {
               <Input value={editForm.linkedin_url || ""} onChange={(e) => setEditForm({ ...editForm, linkedin_url: e.target.value })} />
             </div>
             <div className="col-span-2 space-y-2">
+              <Label>Candidate Type</Label>
+              <Select
+                value={editForm.candidate_type || "domestic"}
+                onValueChange={(value) => setEditForm({ ...editForm, candidate_type: value, country: value === "domestic" ? null : editForm.country })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="domestic">Domestic</SelectItem>
+                  <SelectItem value="international">International</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {editForm.candidate_type === "international" && (
+              <div className="col-span-2 space-y-2">
+                <Label>Country</Label>
+                <Input value={editForm.country || ""} onChange={(e) => setEditForm({ ...editForm, country: e.target.value })} />
+              </div>
+            )}
+            <div className="col-span-2 space-y-2">
               <Label>Bio</Label>
               <Textarea value={editForm.bio || ""} onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })} rows={3} />
             </div>
