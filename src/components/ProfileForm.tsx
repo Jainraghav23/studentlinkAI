@@ -63,6 +63,8 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
     linkedin_url: "",
     email: "",
     bio: "",
+    candidate_type: "domestic",
+    country: "",
   });
 
   useEffect(() => {
