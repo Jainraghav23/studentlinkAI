@@ -167,6 +167,8 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
         email: formData.email.trim() || null,
         bio: formData.bio.trim() || null,
         avatar_url: avatarUrl,
+        candidate_type: formData.candidate_type || "domestic",
+        country: formData.candidate_type === "international" ? (formData.country.trim() || null) : null,
       };
 
       if (existingProfile) {
