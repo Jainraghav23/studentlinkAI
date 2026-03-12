@@ -81,6 +81,8 @@ export function AlumniSubmissionForm() {
           specialization: formData.specialization || null,
           linkedin_url: formData.linkedin_url || null,
           bio: formData.bio || null,
+          candidate_type: formData.candidate_type || "domestic",
+          country: formData.candidate_type === "international" ? (formData.country || null) : null,
           website: formData.website // Honeypot field
         }
       });
