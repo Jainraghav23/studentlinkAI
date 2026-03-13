@@ -54,6 +54,14 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
     fetchAlumni();
   }, [refreshKey]);
 
+  const uniqueSpecializations = useMemo(() => {
+    return [...new Set(alumni.map(a => a.specialization).filter(Boolean))] as string[];
+  }, [alumni]);
+
+  const uniqueLocations = useMemo(() => {
+    return [...new Set(alumni.map(a => a.location).filter(Boolean))] as string[];
+  }, [alumni]);
+
   const filteredAlumni = useMemo(() => {
     return alumni.filter((person) => {
       const matchesYear = selectedYear === null || person.graduation_year === selectedYear;
@@ -63,10 +71,16 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
         (person.company?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
         (person.job_title?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
         (person.specialization?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+      const matchesCandidateType =
+        candidateTypeFilter === "all" || (person.candidate_type || "domestic") === candidateTypeFilter;
+      const matchesSpecialization =
+        specializationFilter === "all" || person.specialization === specializationFilter;
+      const matchesLocation =
+        locationFilter === "all" || person.location === locationFilter;
 
-      return matchesYear && matchesSearch;
+      return matchesYear && matchesSearch && matchesCandidateType && matchesSpecialization && matchesLocation;
     });
-  }, [selectedYear, searchQuery, alumni]);
+  }, [selectedYear, searchQuery, candidateTypeFilter, specializationFilter, locationFilter, alumni]);
 
   return (
     <section className="py-16 md:py-24">
