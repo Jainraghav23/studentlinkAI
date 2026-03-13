@@ -144,6 +144,13 @@ const AlumniProfile = () => {
                     <span>{alumni.location}</span>
                   </div>
                 )}
+
+                {alumni.candidate_type === "international" && alumni.country && (
+                  <div className="flex items-center gap-2 text-muted-foreground mt-2">
+                    <Globe className="w-5 h-5 flex-shrink-0" />
+                    <span>From {alumni.country}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -178,6 +185,20 @@ const AlumniProfile = () => {
 
             {/* Sidebar */}
             <div className="space-y-6">
+              {/* Candidate Type */}
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="font-display text-lg font-semibold text-foreground mb-3">
+                    Candidate Type
+                  </h3>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary capitalize">
+                    {alumni.candidate_type === "international" && <Globe className="w-4 h-4" />}
+                    {alumni.candidate_type || "Domestic"}
+                    {alumni.candidate_type === "international" && alumni.country && ` — ${alumni.country}`}
+                  </span>
+                </CardContent>
+              </Card>
+
               {/* Specialization */}
               {alumni.specialization && (
                 <Card>
