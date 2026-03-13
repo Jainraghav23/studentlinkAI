@@ -99,6 +99,40 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
         <div className="space-y-6 mb-12">
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
           <YearFilter selectedYear={selectedYear} onYearSelect={setSelectedYear} />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Select value={candidateTypeFilter} onValueChange={setCandidateTypeFilter}>
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue placeholder="Candidate Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Candidates</SelectItem>
+                <SelectItem value="domestic">Domestic</SelectItem>
+                <SelectItem value="international">International</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={specializationFilter} onValueChange={setSpecializationFilter}>
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue placeholder="Specialization" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Specializations</SelectItem>
+                {uniqueSpecializations.map((s) => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={locationFilter} onValueChange={setLocationFilter}>
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue placeholder="Location" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Locations</SelectItem>
+                {uniqueLocations.map((l) => (
+                  <SelectItem key={l} value={l}>{l}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Results count */}
