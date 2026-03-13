@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   Loader2,
   User,
+  Globe,
 } from "lucide-react";
 
 const AlumniProfile = () => {
