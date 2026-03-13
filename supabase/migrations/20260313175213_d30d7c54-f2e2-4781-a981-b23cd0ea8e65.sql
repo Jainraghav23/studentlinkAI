@@ -1,0 +1,1 @@
+ALTER VIEW public.alumni_profiles_public SET (security_barrier = true);

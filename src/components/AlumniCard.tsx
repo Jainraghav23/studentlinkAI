@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { AlumniProfile } from "./AlumniDirectory";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Briefcase, GraduationCap, Linkedin } from "lucide-react";
+import { MapPin, Briefcase, GraduationCap, Linkedin, Globe } from "lucide-react";
 
 interface AlumniCardProps {
   alumni: AlumniProfile;
@@ -67,14 +67,20 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
           )}
         </div>
 
-        {/* Specialization badge */}
-        {alumni.specialization && (
-          <div className="mt-4">
+        {/* Badges */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {alumni.specialization && (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
               {alumni.specialization}
             </span>
-          </div>
-        )}
+          )}
+          {alumni.candidate_type === "international" && (
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+              <Globe className="w-3 h-3" />
+              {alumni.country || "International"}
+            </span>
+          )}
+        </div>
 
         {/* Contact links */}
         {alumni.linkedin_url && (

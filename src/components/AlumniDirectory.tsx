@@ -4,6 +4,9 @@ import AlumniCard from "./AlumniCard";
 import YearFilter from "./YearFilter";
 import SearchBar from "./SearchBar";
 import { Users, Loader2 } from "lucide-react";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 
 export interface AlumniProfile {
   id: string;
@@ -16,6 +19,8 @@ export interface AlumniProfile {
   linkedin_url: string | null;
   bio: string | null;
   avatar_url: string | null;
+  candidate_type: string | null;
+  country: string | null;
   // Note: email is intentionally excluded from public queries for privacy
 }
 
@@ -26,15 +31,17 @@ interface AlumniDirectoryProps {
 const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [candidateTypeFilter, setCandidateTypeFilter] = useState<string>("all");
+  const [specializationFilter, setSpecializationFilter] = useState<string>("all");
+  const [locationFilter, setLocationFilter] = useState<string>("all");
   const [alumni, setAlumni] = useState<AlumniProfile[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchAlumni = async () => {
     setLoading(true);
-    // Use the public view which excludes sensitive columns (email, claim_token)
     const { data, error } = await supabase
       .from("alumni_profiles_public" as any)
-      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url")
+      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country")
       .order("graduation_year", { ascending: false });
 
     if (!error && data) {
@@ -47,6 +54,14 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
     fetchAlumni();
   }, [refreshKey]);
 
+  const uniqueSpecializations = useMemo(() => {
+    return [...new Set(alumni.map(a => a.specialization).filter(Boolean))] as string[];
+  }, [alumni]);
+
+  const uniqueLocations = useMemo(() => {
+    return [...new Set(alumni.map(a => a.location).filter(Boolean))] as string[];
+  }, [alumni]);
+
   const filteredAlumni = useMemo(() => {
     return alumni.filter((person) => {
       const matchesYear = selectedYear === null || person.graduation_year === selectedYear;
@@ -56,10 +71,16 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
         (person.company?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
         (person.job_title?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
         (person.specialization?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+      const matchesCandidateType =
+        candidateTypeFilter === "all" || (person.candidate_type || "domestic") === candidateTypeFilter;
+      const matchesSpecialization =
+        specializationFilter === "all" || person.specialization === specializationFilter;
+      const matchesLocation =
+        locationFilter === "all" || person.location === locationFilter;
 
-      return matchesYear && matchesSearch;
+      return matchesYear && matchesSearch && matchesCandidateType && matchesSpecialization && matchesLocation;
     });
-  }, [selectedYear, searchQuery, alumni]);
+  }, [selectedYear, searchQuery, candidateTypeFilter, specializationFilter, locationFilter, alumni]);
 
   return (
     <section className="py-16 md:py-24">
@@ -78,6 +99,40 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
         <div className="space-y-6 mb-12">
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
           <YearFilter selectedYear={selectedYear} onYearSelect={setSelectedYear} />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Select value={candidateTypeFilter} onValueChange={setCandidateTypeFilter}>
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue placeholder="Candidate Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Candidates</SelectItem>
+                <SelectItem value="domestic">Domestic</SelectItem>
+                <SelectItem value="international">International</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={specializationFilter} onValueChange={setSpecializationFilter}>
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue placeholder="Specialization" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Specializations</SelectItem>
+                {uniqueSpecializations.map((s) => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={locationFilter} onValueChange={setLocationFilter}>
+              <SelectTrigger className="w-full sm:w-[200px]">
+                <SelectValue placeholder="Location" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Locations</SelectItem>
+                {uniqueLocations.map((l) => (
+                  <SelectItem key={l} value={l}>{l}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Results count */}
