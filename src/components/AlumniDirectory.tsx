@@ -4,6 +4,9 @@ import AlumniCard from "./AlumniCard";
 import YearFilter from "./YearFilter";
 import SearchBar from "./SearchBar";
 import { Users, Loader2 } from "lucide-react";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 
 export interface AlumniProfile {
   id: string;
