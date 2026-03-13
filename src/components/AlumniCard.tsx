@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { AlumniProfile } from "./AlumniDirectory";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Briefcase, GraduationCap, Linkedin } from "lucide-react";
+import { MapPin, Briefcase, GraduationCap, Linkedin, Globe } from "lucide-react";
 
 interface AlumniCardProps {
   alumni: AlumniProfile;
