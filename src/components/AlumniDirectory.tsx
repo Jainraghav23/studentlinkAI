@@ -31,15 +31,17 @@ interface AlumniDirectoryProps {
 const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [candidateTypeFilter, setCandidateTypeFilter] = useState<string>("all");
+  const [specializationFilter, setSpecializationFilter] = useState<string>("all");
+  const [locationFilter, setLocationFilter] = useState<string>("all");
   const [alumni, setAlumni] = useState<AlumniProfile[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchAlumni = async () => {
     setLoading(true);
-    // Use the public view which excludes sensitive columns (email, claim_token)
     const { data, error } = await supabase
       .from("alumni_profiles_public" as any)
-      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url")
+      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country")
       .order("graduation_year", { ascending: false });
 
     if (!error && data) {
