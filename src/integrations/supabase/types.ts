@@ -390,8 +390,10 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          candidate_type: string | null
           claimed: boolean | null
           company: string | null
+          country: string | null
           created_at: string | null
           full_name: string | null
           graduation_year: number | null
@@ -406,8 +408,10 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          candidate_type?: string | null
           claimed?: boolean | null
           company?: string | null
+          country?: string | null
           created_at?: string | null
           full_name?: string | null
           graduation_year?: number | null
@@ -422,8 +426,10 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          candidate_type?: string | null
           claimed?: boolean | null
           company?: string | null
+          country?: string | null
           created_at?: string | null
           full_name?: string | null
           graduation_year?: number | null
