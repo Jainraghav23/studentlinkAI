@@ -35,6 +35,7 @@ const Index = () => {
             <div className="container mx-auto px-4 -mt-8 relative z-10">
               <ClaimProfileBanner onClaimed={handleProfileUpdate} />
             </div>
+            <DistinguishedAlumni />
             <AlumniDirectory refreshKey={refreshKey} />
           </>
         ) : (

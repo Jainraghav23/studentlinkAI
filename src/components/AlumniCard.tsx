@@ -28,12 +28,19 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
       <div className="p-6">
         <div className="flex items-start gap-4">
           {/* Avatar */}
-          <Avatar className="w-16 h-16 shadow-md group-hover:scale-105 transition-transform duration-300">
-            <AvatarImage src={alumni.avatar_url || undefined} alt={alumni.full_name} />
-            <AvatarFallback className="bg-gradient-to-br from-primary to-cardinal-light text-primary-foreground font-display text-xl">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
+          <div className="relative">
+            <Avatar className={`w-16 h-16 shadow-md group-hover:scale-105 transition-transform duration-300 ${alumni.is_distinguished ? "ring-2 ring-amber-400/50" : ""}`}>
+              <AvatarImage src={alumni.avatar_url || undefined} alt={alumni.full_name} />
+              <AvatarFallback className={`font-display text-xl ${alumni.is_distinguished ? "bg-gradient-to-br from-amber-400 to-amber-600 text-white" : "bg-gradient-to-br from-primary to-cardinal-light text-primary-foreground"}`}>
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            {alumni.is_distinguished && (
+              <div className="absolute -top-1 -right-1 w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center shadow-sm">
+                <Award className="w-3.5 h-3.5 text-white" />
+              </div>
+            )}
+          </div>
 
           {/* Info */}
           <div className="flex-1 min-w-0">

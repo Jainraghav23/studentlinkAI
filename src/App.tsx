@@ -37,6 +37,7 @@ const App = () => (
               <Route path="/interviews" element={<Interviews />} />
               <Route path="/referrals" element={<Referrals />} />
               <Route path="/alumni/:id" element={<AlumniProfile />} />
+              <Route path="/hall-of-fame" element={<HallOfFame />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
