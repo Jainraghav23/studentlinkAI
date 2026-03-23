@@ -16,6 +16,7 @@ import {
   Loader2,
   User,
   Globe,
+  Award,
 } from "lucide-react";
 
 const AlumniProfile = () => {
