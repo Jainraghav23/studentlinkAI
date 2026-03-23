@@ -208,6 +208,7 @@ const AdminDirectoryManagement = () => {
                   <TableHead>Company</TableHead>
                   <TableHead>Claimed</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>Distinguished</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
