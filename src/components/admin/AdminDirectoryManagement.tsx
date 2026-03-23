@@ -49,6 +49,7 @@ interface AlumniProfile {
   claimed: boolean | null;
   candidate_type: string | null;
   country: string | null;
+  is_distinguished: boolean;
   created_at: string;
 }
 
