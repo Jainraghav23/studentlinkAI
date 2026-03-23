@@ -32,7 +32,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Loader2, Trash2, Search, BookOpen, Pencil } from "lucide-react";
+import { Loader2, Trash2, Search, BookOpen, Pencil, Award } from "lucide-react";
 import { toast } from "sonner";
 
 interface AlumniProfile {
