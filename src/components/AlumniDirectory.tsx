@@ -21,7 +21,7 @@ export interface AlumniProfile {
   avatar_url: string | null;
   candidate_type: string | null;
   country: string | null;
-  // Note: email is intentionally excluded from public queries for privacy
+  is_distinguished: boolean | null;
 }
 
 interface AlumniDirectoryProps {
