@@ -23,7 +23,7 @@ const AlumniCard = ({ alumni, index }: AlumniCardProps) => {
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-cardinal-light opacity-80" />
+      <div className={`absolute top-0 left-0 right-0 h-1 ${alumni.is_distinguished ? "bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600" : "bg-gradient-to-r from-primary to-cardinal-light opacity-80"}`} />
       
       <div className="p-6">
         <div className="flex items-start gap-4">
