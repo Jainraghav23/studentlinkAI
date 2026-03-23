@@ -14,6 +14,7 @@ import AlumniProfile from "./pages/AlumniProfile";
 import Events from "./pages/Events";
 import Interviews from "./pages/Interviews";
 import Referrals from "./pages/Referrals";
+import HallOfFame from "./pages/HallOfFame";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
