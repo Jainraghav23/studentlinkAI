@@ -102,7 +102,21 @@ const AdminDirectoryManagement = () => {
     }
   };
 
-  const openEdit = (profile: AlumniProfile) => {
+  const toggleDistinguished = async (profile: AlumniProfile) => {
+    const newValue = !profile.is_distinguished;
+    try {
+      const { error } = await supabase
+        .from("alumni_profiles")
+        .update({ is_distinguished: newValue })
+        .eq("id", profile.id);
+      if (error) throw error;
+      toast.success(`${profile.full_name} ${newValue ? "marked as" : "removed from"} distinguished`);
+      fetchProfiles();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update");
+    }
+  };
+
     setEditTarget(profile);
     setEditForm({
       full_name: profile.full_name,
