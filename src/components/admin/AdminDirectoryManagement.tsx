@@ -117,6 +117,7 @@ const AdminDirectoryManagement = () => {
     }
   };
 
+  const openEdit = (profile: AlumniProfile) => {
     setEditTarget(profile);
     setEditForm({
       full_name: profile.full_name,
