@@ -16,6 +16,7 @@ import {
   Loader2,
   User,
   Globe,
+  Award,
 } from "lucide-react";
 
 const AlumniProfile = () => {
@@ -28,7 +29,7 @@ const AlumniProfile = () => {
       const { data, error } = await supabase
         .from("alumni_profiles_public" as any)
         .select(
-          "id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country"
+          "id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country, is_distinguished"
         )
         .eq("id", id!)
         .maybeSingle();
@@ -117,8 +118,14 @@ const AlumniProfile = () => {
 
               {/* Basic Info */}
               <div className="flex-1">
-                <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+                <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
                   {alumni.full_name}
+                  {alumni.is_distinguished && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-700">
+                      <Award className="w-4 h-4" />
+                      Distinguished
+                    </span>
+                  )}
                 </h1>
                 <div className="flex items-center gap-2 text-lg text-primary mb-4">
                   <GraduationCap className="w-5 h-5" />

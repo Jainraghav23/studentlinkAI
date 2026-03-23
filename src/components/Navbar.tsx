@@ -107,6 +107,9 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
               <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
                 <Link to="/referrals">Referrals</Link>
               </Button>
+              <Button variant="outline" asChild className="font-bold text-amber-700 border-amber-300 hover:bg-amber-50">
+                <Link to="/hall-of-fame">Hall of Fame</Link>
+              </Button>
               {!user && <AlumniSubmissionForm />}
               {user ? (
                 <>
