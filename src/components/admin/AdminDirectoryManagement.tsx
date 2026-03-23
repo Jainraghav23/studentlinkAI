@@ -67,7 +67,7 @@ const AdminDirectoryManagement = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("alumni_profiles")
-      .select("id, full_name, email, graduation_year, job_title, company, location, specialization, linkedin_url, bio, claimed, candidate_type, country, created_at")
+      .select("id, full_name, email, graduation_year, job_title, company, location, specialization, linkedin_url, bio, claimed, candidate_type, country, is_distinguished, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
