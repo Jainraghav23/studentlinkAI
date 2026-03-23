@@ -28,6 +28,7 @@ export type Database = {
           full_name: string
           graduation_year: number
           id: string
+          is_distinguished: boolean
           job_title: string | null
           linkedin_url: string | null
           location: string | null
@@ -48,6 +49,7 @@ export type Database = {
           full_name: string
           graduation_year: number
           id?: string
+          is_distinguished?: boolean
           job_title?: string | null
           linkedin_url?: string | null
           location?: string | null
@@ -68,6 +70,7 @@ export type Database = {
           full_name?: string
           graduation_year?: number
           id?: string
+          is_distinguished?: boolean
           job_title?: string | null
           linkedin_url?: string | null
           location?: string | null
@@ -398,6 +401,7 @@ export type Database = {
           full_name: string | null
           graduation_year: number | null
           id: string | null
+          is_distinguished: boolean | null
           job_title: string | null
           linkedin_url: string | null
           location: string | null
@@ -416,6 +420,7 @@ export type Database = {
           full_name?: string | null
           graduation_year?: number | null
           id?: string | null
+          is_distinguished?: boolean | null
           job_title?: string | null
           linkedin_url?: string | null
           location?: string | null
@@ -434,6 +439,7 @@ export type Database = {
           full_name?: string | null
           graduation_year?: number | null
           id?: string | null
+          is_distinguished?: boolean | null
           job_title?: string | null
           linkedin_url?: string | null
           location?: string | null
