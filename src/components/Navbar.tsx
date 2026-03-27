@@ -88,6 +88,86 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
     .toUpperCase()
     .slice(0, 2);
 
+  const navLinks = (
+    <>
+      <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted w-full md:w-auto justify-start md:justify-center">
+        <Link to="/community" onClick={() => setMobileOpen(false)}>Community</Link>
+      </Button>
+      <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted w-full md:w-auto justify-start md:justify-center">
+        <Link to="/events" onClick={() => setMobileOpen(false)}>Events</Link>
+      </Button>
+      <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted w-full md:w-auto justify-start md:justify-center">
+        <Link to="/interviews" onClick={() => setMobileOpen(false)}>Interviews</Link>
+      </Button>
+      <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted w-full md:w-auto justify-start md:justify-center">
+        <Link to="/referrals" onClick={() => setMobileOpen(false)}>Referrals</Link>
+      </Button>
+      <Button variant="outline" asChild className="font-bold text-accent-foreground border-accent hover:bg-accent/10 w-full md:w-auto justify-start md:justify-center">
+        <Link to="/hall-of-fame" onClick={() => setMobileOpen(false)}>Hall of Fame</Link>
+      </Button>
+    </>
+  );
+
+  const userActions = (
+    <>
+      {!user && <AlumniSubmissionForm />}
+      {user ? (
+        <>
+          {!profile && (
+            <Button onClick={() => { setShowProfileForm(true); setMobileOpen(false); }} size="sm">
+              Create Profile
+            </Button>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={profile?.avatar_url || undefined} />
+                  <AvatarFallback className="bg-primary text-primary-foreground font-display">
+                    {initials || <User className="w-4 h-4" />}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="px-2 py-1.5">
+                <p className="text-sm font-medium">{profile?.full_name || "Alumni"}</p>
+                <p className="text-xs text-muted-foreground">{user.email}</p>
+              </div>
+              <DropdownMenuSeparator />
+              {profile ? (
+                <DropdownMenuItem onClick={() => navigate("/my-profile")}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit Profile
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem onClick={() => setShowProfileForm(true)}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Create Profile
+                </DropdownMenuItem>
+              )}
+              {isAdmin && (
+                <DropdownMenuItem onClick={() => navigate("/admin")}>
+                  <Shield className="w-4 h-4 mr-2" />
+                  Admin Dashboard
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
+      ) : (
+        <Button asChild>
+          <Link to="/auth" onClick={() => setMobileOpen(false)}>Login</Link>
+        </Button>
+      )}
+    </>
+  );
+
   return (
     <>
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
@@ -103,79 +183,35 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
               </span>
             </Link>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
-                <Link to="/community">Community</Link>
-              </Button>
-              <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
-                <Link to="/events">Events</Link>
-              </Button>
-              <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
-                <Link to="/interviews">Interviews</Link>
-              </Button>
-              <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted">
-                <Link to="/referrals">Referrals</Link>
-              </Button>
-              <Button variant="outline" asChild className="font-bold text-amber-700 border-amber-300 hover:bg-amber-50">
-                <Link to="/hall-of-fame">Hall of Fame</Link>
-              </Button>
-              {!user && <AlumniSubmissionForm />}
-              {user ? (
-                <>
-                  {!profile && (
-                    <Button onClick={() => setShowProfileForm(true)} size="sm">
-                      Create Profile
+            {/* Desktop Navigation */}
+            {!isMobile && (
+              <div className="flex items-center gap-2">
+                {navLinks}
+                {userActions}
+              </div>
+            )}
+
+            {/* Mobile Navigation */}
+            {isMobile && (
+              <div className="flex items-center gap-2">
+                {userActions}
+                <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Menu className="h-5 w-5" />
                     </Button>
-                  )}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={profile?.avatar_url || undefined} />
-                          <AvatarFallback className="bg-primary text-primary-foreground font-display">
-                            {initials || <User className="w-4 h-4" />}
-                          </AvatarFallback>
-                        </Avatar>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                      <div className="px-2 py-1.5">
-                        <p className="text-sm font-medium">{profile?.full_name || "Alumni"}</p>
-                        <p className="text-xs text-muted-foreground">{user.email}</p>
-                      </div>
-                      <DropdownMenuSeparator />
-                      {profile ? (
-                        <DropdownMenuItem onClick={() => navigate("/my-profile")}>
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit Profile
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem onClick={() => setShowProfileForm(true)}>
-                          <Edit className="w-4 h-4 mr-2" />
-                          Create Profile
-                        </DropdownMenuItem>
-                      )}
-                      {isAdmin && (
-                        <DropdownMenuItem onClick={() => navigate("/admin")}>
-                          <Shield className="w-4 h-4 mr-2" />
-                          Admin Dashboard
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleSignOut}>
-                        <LogOut className="w-4 h-4 mr-2" />
-                        Sign Out
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              ) : (
-                <Button asChild>
-                  <Link to="/auth">Login</Link>
-                </Button>
-              )}
-            </div>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-72">
+                    <SheetHeader>
+                      <SheetTitle>Menu</SheetTitle>
+                    </SheetHeader>
+                    <div className="flex flex-col gap-2 mt-6">
+                      {navLinks}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
+            )}
           </div>
         </div>
       </nav>
