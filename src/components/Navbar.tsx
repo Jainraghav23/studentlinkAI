@@ -48,7 +48,9 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdmin();
+  const isMobile = useIsMobile();
   const [profile, setProfile] = useState<AlumniProfile | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [showProfileForm, setShowProfileForm] = useState(false);
 
   const fetchProfile = async () => {
