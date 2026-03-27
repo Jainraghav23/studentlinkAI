@@ -12,10 +12,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { GraduationCap, LogOut, User, Edit, Shield } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { GraduationCap, LogOut, User, Edit, Shield, Menu } from "lucide-react";
 import ProfileForm from "./ProfileForm";
 import { AlumniSubmissionForm } from "./AlumniSubmissionForm";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AlumniProfile {
   id: string;
