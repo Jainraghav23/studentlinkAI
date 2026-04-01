@@ -29,7 +29,7 @@ const AlumniProfile = () => {
       const { data, error } = await supabase
         .from("alumni_profiles_public" as any)
         .select(
-          "id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country, is_distinguished"
+          "id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country"
         )
         .eq("id", id!)
         .maybeSingle();
