@@ -102,9 +102,6 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
       <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted w-full md:w-auto justify-start md:justify-center">
         <Link to="/referrals" onClick={() => setMobileOpen(false)}>Referrals</Link>
       </Button>
-      <Button variant="outline" asChild className="font-bold text-accent-foreground border-accent hover:bg-accent/10 w-full md:w-auto justify-start md:justify-center">
-        <Link to="/hall-of-fame" onClick={() => setMobileOpen(false)}>Hall of Fame</Link>
-      </Button>
     </>
   );
 

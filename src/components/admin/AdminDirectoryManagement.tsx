@@ -32,7 +32,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Loader2, Trash2, Search, BookOpen, Pencil, Award } from "lucide-react";
+import { Loader2, Trash2, Search, BookOpen, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
 interface AlumniProfile {
@@ -49,7 +49,7 @@ interface AlumniProfile {
   claimed: boolean | null;
   candidate_type: string | null;
   country: string | null;
-  is_distinguished: boolean;
+  
   created_at: string;
 }
 
@@ -67,7 +67,7 @@ const AdminDirectoryManagement = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("alumni_profiles")
-      .select("id, full_name, email, graduation_year, job_title, company, location, specialization, linkedin_url, bio, claimed, candidate_type, country, is_distinguished, created_at")
+      .select("id, full_name, email, graduation_year, job_title, company, location, specialization, linkedin_url, bio, claimed, candidate_type, country, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -102,20 +102,8 @@ const AdminDirectoryManagement = () => {
     }
   };
 
-  const toggleDistinguished = async (profile: AlumniProfile) => {
-    const newValue = !profile.is_distinguished;
-    try {
-      const { error } = await supabase
-        .from("alumni_profiles")
-        .update({ is_distinguished: newValue })
-        .eq("id", profile.id);
-      if (error) throw error;
-      toast.success(`${profile.full_name} ${newValue ? "marked as" : "removed from"} distinguished`);
-      fetchProfiles();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update");
-    }
-  };
+
+
 
   const openEdit = (profile: AlumniProfile) => {
     setEditTarget(profile);
@@ -223,7 +211,7 @@ const AdminDirectoryManagement = () => {
                   <TableHead>Company</TableHead>
                   <TableHead>Claimed</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
-                  <TableHead>Distinguished</TableHead>
+                  
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -256,16 +244,6 @@ const AdminDirectoryManagement = () => {
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => toggleDistinguished(profile)}
-                        className={profile.is_distinguished ? "text-amber-500 hover:text-amber-600" : "text-muted-foreground hover:text-amber-500"}
-                      >
-                        <Award className="w-4 h-4" />
-                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

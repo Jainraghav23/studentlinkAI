@@ -16,7 +16,7 @@ import AlumniProfile from "./pages/AlumniProfile";
 import Events from "./pages/Events";
 import Interviews from "./pages/Interviews";
 import Referrals from "./pages/Referrals";
-import HallOfFame from "./pages/HallOfFame";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,7 +36,7 @@ const AnimatedRoutes = () => {
         <Route path="/interviews" element={<PageTransition><Interviews /></PageTransition>} />
         <Route path="/referrals" element={<PageTransition><Referrals /></PageTransition>} />
         <Route path="/alumni/:id" element={<PageTransition><AlumniProfile /></PageTransition>} />
-        <Route path="/hall-of-fame" element={<PageTransition><HallOfFame /></PageTransition>} />
+        
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>

@@ -21,7 +21,7 @@ export interface AlumniProfile {
   avatar_url: string | null;
   candidate_type: string | null;
   country: string | null;
-  is_distinguished: boolean | null;
+  
 }
 
 interface AlumniDirectoryProps {
@@ -41,7 +41,7 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
     setLoading(true);
     const { data, error } = await supabase
       .from("alumni_profiles_public" as any)
-      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country, is_distinguished")
+      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country")
       .order("graduation_year", { ascending: false });
 
     if (!error && data) {
@@ -91,7 +91,7 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
             Our Alumni Network
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Browse through our distinguished alumni from the past decade. Filter by graduation year or search for specific individuals.
+            Browse through our alumni from the past decade. Filter by graduation year or search for specific individuals.
           </p>
         </div>
 
