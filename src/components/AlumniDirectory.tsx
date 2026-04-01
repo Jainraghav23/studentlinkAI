@@ -91,7 +91,7 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
             Our Alumni Network
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Browse through our distinguished alumni from the past decade. Filter by graduation year or search for specific individuals.
+            Browse through our alumni from the past decade. Filter by graduation year or search for specific individuals.
           </p>
         </div>
 
