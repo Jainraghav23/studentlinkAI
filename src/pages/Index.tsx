@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import AlumniDirectory from "@/components/AlumniDirectory";
-import DistinguishedAlumni from "@/components/DistinguishedAlumni";
 import Footer from "@/components/Footer";
 import ClaimProfileBanner from "@/components/ClaimProfileBanner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -35,7 +34,6 @@ const Index = () => {
             <div className="container mx-auto px-4 -mt-8 relative z-10">
               <ClaimProfileBanner onClaimed={handleProfileUpdate} />
             </div>
-            <DistinguishedAlumni />
             <AlumniDirectory refreshKey={refreshKey} />
           </>
         ) : (

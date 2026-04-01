@@ -36,7 +36,7 @@ const AnimatedRoutes = () => {
         <Route path="/interviews" element={<PageTransition><Interviews /></PageTransition>} />
         <Route path="/referrals" element={<PageTransition><Referrals /></PageTransition>} />
         <Route path="/alumni/:id" element={<PageTransition><AlumniProfile /></PageTransition>} />
-        <Route path="/hall-of-fame" element={<PageTransition><HallOfFame /></PageTransition>} />
+        
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>

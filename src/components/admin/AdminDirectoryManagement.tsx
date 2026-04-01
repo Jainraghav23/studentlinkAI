@@ -257,16 +257,6 @@ const AdminDirectoryManagement = () => {
                         </Button>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => toggleDistinguished(profile)}
-                        className={profile.is_distinguished ? "text-amber-500 hover:text-amber-600" : "text-muted-foreground hover:text-amber-500"}
-                      >
-                        <Award className="w-4 h-4" />
-                      </Button>
-                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
