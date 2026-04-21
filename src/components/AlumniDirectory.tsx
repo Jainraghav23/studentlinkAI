@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import AlumniCard from "./AlumniCard";
 import YearFilter from "./YearFilter";
 import SearchBar from "./SearchBar";
+import AnniversaryBanner from "./AnniversaryBanner";
 import { Users, Loader2 } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -62,6 +63,17 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
     return [...new Set(alumni.map(a => a.location).filter(Boolean))] as string[];
   }, [alumni]);
 
+  const availableYears = useMemo(() => {
+    return [...new Set(alumni.map((a) => a.graduation_year).filter(Boolean))] as number[];
+  }, [alumni]);
+
+  const handleMilestoneSelect = (year: number) => {
+    setSelectedYear((current) => (current === year ? null : year));
+    setTimeout(() => {
+      document.getElementById("alumni-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  };
+
   const filteredAlumni = useMemo(() => {
     return alumni.filter((person) => {
       const matchesYear = selectedYear === null || person.graduation_year === selectedYear;
@@ -84,9 +96,14 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
 
   return (
     <section className="py-16 md:py-24">
+      <AnniversaryBanner
+        availableYears={availableYears}
+        selectedYear={selectedYear}
+        onSelectYear={handleMilestoneSelect}
+      />
       <div className="container mx-auto px-4">
         {/* Section header */}
-        <div className="text-center mb-12">
+        <div id="alumni-results" className="text-center mb-12 pt-12 scroll-mt-24">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
             Our Alumni Network
           </h2>
