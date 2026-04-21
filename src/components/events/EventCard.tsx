@@ -12,12 +12,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CalendarDays, MapPin, Users, Clock, Pencil, Trash2 } from "lucide-react";
+import { CalendarDays, MapPin, Users, Clock, Pencil, Trash2, Images } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { EventEditForm } from "./EventEditForm";
+import { EventGallery } from "./EventGallery";
 
 interface Event {
   id: string;
@@ -42,6 +43,7 @@ interface EventCardProps {
 export function EventCard({ event, isPending, isPast }: EventCardProps) {
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [showGallery, setShowGallery] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const queryClient = useQueryClient();
 
@@ -101,6 +103,17 @@ export function EventCard({ event, isPending, isPast }: EventCardProps) {
               </div>
             )}
           </div>
+          {!isPending && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full"
+              onClick={() => setShowGallery(true)}
+            >
+              <Images className="w-4 h-4 mr-1.5" />
+              {isPast ? "View Gallery" : "Photo Gallery"}
+            </Button>
+          )}
           {isPending && (
             <div className="flex gap-2 pt-2 border-t">
               <Button variant="outline" size="sm" className="flex-1" onClick={() => setShowEdit(true)}>
@@ -115,6 +128,15 @@ export function EventCard({ event, isPending, isPast }: EventCardProps) {
           )}
         </CardContent>
       </Card>
+
+      {!isPending && (
+        <EventGallery
+          open={showGallery}
+          onOpenChange={setShowGallery}
+          eventId={event.id}
+          eventTitle={event.title}
+        />
+      )}
 
       {isPending && (
         <>
