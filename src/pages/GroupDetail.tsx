@@ -52,7 +52,7 @@ const GroupDetailContent = () => {
         .eq("group_id", id)
         .eq("user_id", user.id)
         .maybeSingle();
-      return data as { id: string } | null;
+      return data as unknown as { id: string } | null;
     },
     enabled: !!id && !!user?.id,
   });

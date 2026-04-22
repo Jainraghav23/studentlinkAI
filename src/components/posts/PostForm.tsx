@@ -9,7 +9,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Send } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
-export const PostForm = ({ onPostCreated }: { onPostCreated?: () => void }) => {
+export const PostForm = ({
+  onPostCreated,
+  groupId,
+}: {
+  onPostCreated?: () => void;
+  groupId?: string;
+}) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [content, setContent] = useState("");
@@ -38,7 +44,8 @@ export const PostForm = ({ onPostCreated }: { onPostCreated?: () => void }) => {
       const { error } = await supabase.from("posts").insert({
         user_id: user.id,
         content: content.trim(),
-      });
+        ...(groupId ? { group_id: groupId } : {}),
+      } as any);
 
       if (error) throw error;
 
