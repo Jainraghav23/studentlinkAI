@@ -252,6 +252,80 @@ export type Database = {
         }
         Relationships: []
       }
+      group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      groups: {
+        Row: {
+          category: string
+          cover_image_url: string | null
+          created_at: string
+          creator_id: string
+          description: string
+          id: string
+          name: string
+          privacy: string
+          slug: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          creator_id: string
+          description: string
+          id?: string
+          name: string
+          privacy?: string
+          slug: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          creator_id?: string
+          description?: string
+          id?: string
+          name?: string
+          privacy?: string
+          slug?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       interview_experiences: {
         Row: {
           company: string
@@ -336,6 +410,7 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          group_id: string | null
           id: string
           image_url: string | null
           updated_at: string
@@ -344,6 +419,7 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string
+          group_id?: string | null
           id?: string
           image_url?: string | null
           updated_at?: string
@@ -352,12 +428,21 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
+          group_id?: string | null
           id?: string
           image_url?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "posts_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       referrals: {
         Row: {
@@ -486,11 +571,17 @@ export type Database = {
       }
     }
     Functions: {
+      get_group_privacy: { Args: { _group_id: string }; Returns: string }
+      get_group_status: { Args: { _group_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_group_member: {
+        Args: { _group_id: string; _user_id: string }
         Returns: boolean
       }
     }
