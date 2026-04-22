@@ -4,16 +4,22 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PostCard } from "./PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const PostList = () => {
+export const PostList = ({ groupId }: { groupId?: string } = {}) => {
   const queryClient = useQueryClient();
 
   const { data: posts = [], isLoading } = useQuery({
-    queryKey: ["posts"],
+    queryKey: groupId ? ["posts", groupId] : ["posts", "main"],
     queryFn: async () => {
-      const { data: postsData, error } = await supabase
+      let query = supabase
         .from("posts")
         .select("*")
         .order("created_at", { ascending: false });
+      if (groupId) {
+        query = query.eq("group_id", groupId);
+      } else {
+        query = query.is("group_id", null);
+      }
+      const { data: postsData, error } = await query;
 
       if (error) throw error;
 

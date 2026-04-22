@@ -16,6 +16,8 @@ import AlumniProfile from "./pages/AlumniProfile";
 import Events from "./pages/Events";
 import Interviews from "./pages/Interviews";
 import Referrals from "./pages/Referrals";
+import Groups from "./pages/Groups";
+import GroupDetail from "./pages/GroupDetail";
 
 import NotFound from "./pages/NotFound";
 
@@ -35,6 +37,8 @@ const AnimatedRoutes = () => {
         <Route path="/events" element={<PageTransition><Events /></PageTransition>} />
         <Route path="/interviews" element={<PageTransition><Interviews /></PageTransition>} />
         <Route path="/referrals" element={<PageTransition><Referrals /></PageTransition>} />
+        <Route path="/groups" element={<PageTransition><Groups /></PageTransition>} />
+        <Route path="/groups/:id" element={<PageTransition><GroupDetail /></PageTransition>} />
         <Route path="/alumni/:id" element={<PageTransition><AlumniProfile /></PageTransition>} />
         
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
