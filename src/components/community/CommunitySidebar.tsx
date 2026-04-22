@@ -101,6 +101,26 @@ export function CommunitySidebar() {
         {!isCollapsed && (
           <>
             <SidebarSeparator />
+            {user && myGroups.length > 0 && (
+              <SidebarGroup>
+                <SidebarGroupLabel>My Groups</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {myGroups.map((g) => (
+                      <SidebarMenuItem key={g.id}>
+                        <SidebarMenuButton asChild tooltip={g.name}>
+                          <Link to={`/groups/${g.id}`}>
+                            <Users2 className="h-4 w-4" />
+                            <span className="truncate">{g.name}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )}
+            {user && myGroups.length > 0 && <SidebarSeparator />}
             <SidebarGroup>
               <SidebarGroupLabel>Create Post</SidebarGroupLabel>
               <SidebarGroupContent>
