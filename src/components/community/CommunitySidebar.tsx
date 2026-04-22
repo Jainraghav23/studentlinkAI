@@ -1,9 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
-import { Users, Home, MessageSquare, User, CalendarDays } from "lucide-react";
+import { Users, Home, MessageSquare, User, CalendarDays, Users2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { PostForm } from "@/components/posts/PostForm";
 import { Button } from "@/components/ui/button";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +23,7 @@ const navigationItems = [
   { icon: Home, label: "Home", href: "/" },
   { icon: MessageSquare, label: "Community", href: "/community" },
   { icon: CalendarDays, label: "Events", href: "/events" },
+  { icon: Users2, label: "Groups", href: "/groups" },
   { icon: Users, label: "Directory", href: "/#directory" },
 ];
 
@@ -31,6 +33,26 @@ export function CommunitySidebar() {
   const queryClient = useQueryClient();
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+
+  const { data: myGroups = [] } = useQuery({
+    queryKey: ["my-groups", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const { data: memberships } = await supabase
+        .from("group_members" as any)
+        .select("group_id")
+        .eq("user_id", user.id);
+      const ids = (memberships as any[] | null)?.map((m) => m.group_id) || [];
+      if (ids.length === 0) return [];
+      const { data: groups } = await supabase
+        .from("groups" as any)
+        .select("id, name")
+        .in("id", ids)
+        .eq("status", "approved");
+      return (groups as unknown as { id: string; name: string }[]) || [];
+    },
+    enabled: !!user?.id,
+  });
 
   const allNavItems = [
     ...navigationItems,
