@@ -173,12 +173,42 @@ export const GroupSubmissionForm = ({ onSubmitted }: { onSubmitted?: () => void 
             </div>
           </div>
           <div>
-            <Label htmlFor="g-cover">Cover image URL (optional)</Label>
-            <Input id="g-cover" value={coverUrl} onChange={(e) => setCoverUrl(e.target.value)} placeholder="https://..." />
+            <Label htmlFor="g-cover">Cover image (optional)</Label>
+            {coverPreview ? (
+              <div className="relative mt-2 rounded-md overflow-hidden border">
+                <img src={coverPreview} alt="Cover preview" className="w-full h-40 object-cover" />
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="destructive"
+                  className="absolute top-2 right-2 h-7 w-7"
+                  onClick={() => handleFile(null)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              <label
+                htmlFor="g-cover"
+                className="mt-2 flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-md p-6 cursor-pointer hover:bg-muted/50 transition-colors"
+              >
+                <Upload className="w-6 h-6 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">
+                  Click to upload (auto-resized, max 10MB)
+                </span>
+                <Input
+                  id="g-cover"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
+                />
+              </label>
+            )}
           </div>
-          <Button type="submit" disabled={submitting} className="w-full">
-            {submitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-            Submit for review
+          <Button type="submit" disabled={submitting || uploading} className="w-full">
+            {(submitting || uploading) && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+            {uploading ? "Uploading cover..." : "Submit for review"}
           </Button>
         </form>
       </DialogContent>
