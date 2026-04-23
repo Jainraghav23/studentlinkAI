@@ -9,11 +9,42 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
 const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
+
+const MAX_W = 1200;
+const MAX_H = 600;
+const TARGET_TYPE = "image/jpeg";
+const QUALITY = 0.85;
+
+async function resizeImage(file: File): Promise<Blob> {
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result as string);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const i = new Image();
+    i.onload = () => resolve(i);
+    i.onerror = reject;
+    i.src = dataUrl;
+  });
+  const ratio = Math.min(MAX_W / img.width, MAX_H / img.height, 1);
+  const w = Math.round(img.width * ratio);
+  const h = Math.round(img.height * ratio);
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d")!;
+  ctx.drawImage(img, 0, 0, w, h);
+  return new Promise<Blob>((resolve, reject) =>
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Resize failed"))), TARGET_TYPE, QUALITY)
+  );
+}
 
 export const GroupSubmissionForm = ({ onSubmitted }: { onSubmitted?: () => void }) => {
   const { user } = useAuth();
@@ -23,7 +54,27 @@ export const GroupSubmissionForm = ({ onSubmitted }: { onSubmitted?: () => void 
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("interest");
   const [privacy, setPrivacy] = useState("public");
-  const [coverUrl, setCoverUrl] = useState("");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
+
+  const handleFile = (f: File | null) => {
+    if (!f) {
+      setCoverFile(null);
+      setCoverPreview("");
+      return;
+    }
+    if (!f.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (f.size > 10 * 1024 * 1024) {
+      toast.error("Image must be under 10MB");
+      return;
+    }
+    setCoverFile(f);
+    setCoverPreview(URL.createObjectURL(f));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +85,19 @@ export const GroupSubmissionForm = ({ onSubmitted }: { onSubmitted?: () => void 
     }
     setSubmitting(true);
     try {
+      let cover_image_url: string | null = null;
+      if (coverFile) {
+        setUploading(true);
+        const blob = await resizeImage(coverFile);
+        const path = `${user.id}/${crypto.randomUUID()}.jpg`;
+        const { error: upErr } = await supabase.storage
+          .from("group-covers")
+          .upload(path, blob, { contentType: TARGET_TYPE, upsert: false });
+        if (upErr) throw upErr;
+        const { data } = supabase.storage.from("group-covers").getPublicUrl(path);
+        cover_image_url = data.publicUrl;
+        setUploading(false);
+      }
       const { error } = await supabase.from("groups" as any).insert({
         creator_id: user.id,
         name: name.trim(),
@@ -41,18 +105,20 @@ export const GroupSubmissionForm = ({ onSubmitted }: { onSubmitted?: () => void 
         description: description.trim(),
         category,
         privacy,
-        cover_image_url: coverUrl.trim() || null,
+        cover_image_url,
       } as any);
       if (error) throw error;
       toast.success("Group submitted! It will appear once an admin approves it.");
       setOpen(false);
-      setName(""); setDescription(""); setCoverUrl("");
+      setName(""); setDescription("");
+      setCoverFile(null); setCoverPreview("");
       setCategory("interest"); setPrivacy("public");
       onSubmitted?.();
     } catch (err: any) {
       toast.error(err.message || "Failed to submit group");
     } finally {
       setSubmitting(false);
+      setUploading(false);
     }
   };
 
