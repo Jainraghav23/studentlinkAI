@@ -1,18 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/hooks/use-admin";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthGate } from "@/components/AuthGate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { GroupMembersList } from "@/components/groups/GroupMembersList";
+import { GroupCoverEditDialog } from "@/components/groups/GroupCoverEditDialog";
 import { PostForm } from "@/components/posts/PostForm";
 import { PostList } from "@/components/posts/PostList";
-import { ArrowLeft, Loader2, Lock, Globe, Users, LogOut, UserPlus } from "lucide-react";
+import { ArrowLeft, Loader2, Lock, Globe, Users, LogOut, UserPlus, ImagePlus } from "lucide-react";
 import { toast } from "sonner";
 import type { Group } from "@/components/groups/GroupCard";
 
@@ -26,7 +28,9 @@ const categoryLabels: Record<string, string> = {
 const GroupDetailContent = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const qc = useQueryClient();
+  const [coverDialogOpen, setCoverDialogOpen] = useState(false);
 
   const { data: group, isLoading: loadingGroup } = useQuery({
     queryKey: ["group", id],
@@ -136,6 +140,7 @@ const GroupDetailContent = () => {
   const isMember = !!membership;
   const canPost = isMember;
   const canViewPosts = group.privacy === "public" || isMember;
+  const canEditCover = !!user && (user.id === group.creator_id || isAdmin);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -151,11 +156,24 @@ const GroupDetailContent = () => {
 
         {/* Header */}
         <div className="rounded-xl overflow-hidden border mb-6">
-          {group.cover_image_url ? (
-            <div className="h-40 bg-cover bg-center" style={{ backgroundImage: `url(${group.cover_image_url})` }} />
-          ) : (
-            <div className="h-40 gradient-hero" />
-          )}
+          <div className="relative">
+            {group.cover_image_url ? (
+              <div className="h-40 bg-cover bg-center" style={{ backgroundImage: `url(${group.cover_image_url})` }} />
+            ) : (
+              <div className="h-40 gradient-hero" />
+            )}
+            {canEditCover && (
+              <Button
+                size="sm"
+                variant="secondary"
+                className="absolute top-3 right-3 shadow-md"
+                onClick={() => setCoverDialogOpen(true)}
+              >
+                <ImagePlus className="w-4 h-4 mr-2" />
+                {group.cover_image_url ? "Edit cover" : "Add cover"}
+              </Button>
+            )}
+          </div>
           <div className="p-6 bg-card">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="flex-1">
@@ -221,6 +239,15 @@ const GroupDetailContent = () => {
         </div>
       </main>
       <Footer />
+      {canEditCover && (
+        <GroupCoverEditDialog
+          open={coverDialogOpen}
+          onOpenChange={setCoverDialogOpen}
+          groupId={group.id}
+          currentCoverUrl={group.cover_image_url}
+          onUpdated={() => qc.invalidateQueries({ queryKey: ["group", id] })}
+        />
+      )}
     </div>
   );
 };
