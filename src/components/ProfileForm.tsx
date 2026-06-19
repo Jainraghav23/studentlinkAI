@@ -45,7 +45,7 @@ const SPECIALIZATIONS = [
   "Supply Chain",
 ];
 
-const YEARS = Array.from({ length: 11 }, (_, i) => 2015 + i);
+const YEARS = Array.from({ length: 14 }, (_, i) => 2015 + i);
 
 const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: ProfileFormProps) => {
   const { user } = useAuth();
