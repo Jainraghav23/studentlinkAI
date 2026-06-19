@@ -1,0 +1,2 @@
+ALTER TABLE public.alumni_profiles DROP CONSTRAINT alumni_profiles_graduation_year_check;
+ALTER TABLE public.alumni_profiles ADD CONSTRAINT alumni_profiles_graduation_year_check CHECK (graduation_year >= 2015 AND graduation_year <= 2028);
