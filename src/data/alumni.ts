@@ -63,6 +63,6 @@ export const alumni: Alumni[] = [
   { id: "30", name: "Joseph Scott", graduationYear: 2015, currentRole: "Senior Partner", company: "McKinsey & Company", location: "New York, NY", specialization: "Strategy" },
 ];
 
-export const graduationYears = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015];
+export const graduationYears = [2028, 2027, 2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019];
 
 export const specializations = ["Strategy", "Finance", "Marketing", "Technology", "Operations", "Entrepreneurship", "Healthcare"];
