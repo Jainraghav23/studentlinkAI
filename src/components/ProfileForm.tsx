@@ -247,6 +247,9 @@ const ProfileForm = ({ open, onOpenChange, existingProfile, onSuccess }: Profile
                 disabled={isUploading}
               />
               <p className="text-xs text-muted-foreground mt-1">Max 5MB, JPG or PNG</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Your photo will be publicly visible in the alumni directory.
+              </p>
             </div>
           </div>
 
