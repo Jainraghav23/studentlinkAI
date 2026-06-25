@@ -571,19 +571,7 @@ export type Database = {
       }
     }
     Functions: {
-      get_group_privacy: { Args: { _group_id: string }; Returns: string }
-      get_group_status: { Args: { _group_id: string }; Returns: string }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      is_group_member: {
-        Args: { _group_id: string; _user_id: string }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
