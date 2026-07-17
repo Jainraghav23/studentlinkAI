@@ -141,7 +141,10 @@ const Auth = () => {
 
     setIsSubmitting(true);
     try {
-      const { data, error } = await signUp(email, password);
+      const redirectTo = nextParam
+        ? `${window.location.origin}${nextParam}`
+        : `${window.location.origin}/`;
+      const { data, error } = await signUp(email, password, { redirectTo });
 
       if (error) {
         if (error.message.includes("User already registered")) {
