@@ -44,6 +44,20 @@ const signupSchema = z.object({
 const Auth = () => {
   const navigate = useNavigate();
   const { user, signUp, signIn, loading } = useAuth();
+  // Preserve OAuth consent redirect (only accept same-origin relative paths).
+  const nextParam = (() => {
+    if (typeof window === "undefined") return null;
+    const raw = new URLSearchParams(window.location.search).get("next");
+    if (!raw) return null;
+    return raw.startsWith("/") && !raw.startsWith("//") ? raw : null;
+  })();
+  const goNext = () => {
+    if (nextParam) {
+      window.location.href = nextParam;
+    } else {
+      navigate("/");
+    }
+  };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,7 +86,7 @@ const Auth = () => {
           .maybeSingle();
 
         if (profile) {
-          navigate("/");
+          goNext();
           return;
         }
 
@@ -111,7 +125,7 @@ const Auth = () => {
         }
       } else {
         toast.success("Welcome back!");
-        navigate("/");
+        goNext();
       }
     } finally {
       setIsSubmitting(false);
