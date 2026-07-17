@@ -18,6 +18,7 @@ import Interviews from "./pages/Interviews";
 import Referrals from "./pages/Referrals";
 import Groups from "./pages/Groups";
 import GroupDetail from "./pages/GroupDetail";
+import OAuthConsent from "./pages/OAuthConsent";
 
 import NotFound from "./pages/NotFound";
 
@@ -40,6 +41,7 @@ const AnimatedRoutes = () => {
         <Route path="/groups" element={<PageTransition><Groups /></PageTransition>} />
         <Route path="/groups/:id" element={<PageTransition><GroupDetail /></PageTransition>} />
         <Route path="/alumni/:id" element={<PageTransition><AlumniProfile /></PageTransition>} />
+        <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
         
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
