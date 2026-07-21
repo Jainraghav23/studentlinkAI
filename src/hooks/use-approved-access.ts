@@ -42,15 +42,14 @@ export const useApprovedAccess = () => {
       let hasApprovedProfile = Boolean(ownedProfile);
 
       if (!hasApprovedProfile && user.email) {
-        const { data: claimableProfile } = await supabase
+        const { data: emailMatchedProfile } = await supabase
           .from("alumni_profiles")
           .select("id")
           .eq("email", user.email.toLowerCase())
-          .eq("claimed", false)
           .is("user_id", null)
           .maybeSingle();
 
-        hasApprovedProfile = Boolean(claimableProfile);
+        hasApprovedProfile = Boolean(emailMatchedProfile);
       }
 
       if (isMounted) {

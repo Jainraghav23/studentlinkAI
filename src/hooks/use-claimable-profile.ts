@@ -42,11 +42,11 @@ export const useClaimableProfile = () => {
       return;
     }
 
-    // Check for unclaimed profile matching user's email (user_id should be NULL)
+    // Check for an approved profile matching user's email that is not linked
+    // to an auth account yet. Older approvals may have claimed=true here.
     const { data: unclaimed } = await supabase
       .from("alumni_profiles")
       .select("*")
-      .eq("claimed", false)
       .is("user_id", null)
       .ilike("email", user.email)
       .single();
@@ -72,7 +72,7 @@ export const useClaimableProfile = () => {
           claim_token: null,
         })
         .eq("id", claimableProfile.id)
-        .eq("claimed", false);
+        .is("user_id", null);
 
       if (error) throw error;
 
