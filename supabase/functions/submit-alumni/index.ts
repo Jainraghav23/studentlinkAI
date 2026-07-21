@@ -51,6 +51,11 @@ function validateGraduationYear(year: number): boolean {
   return year >= 1900 && year <= currentYear + 10;
 }
 
+function validateUuid(value: string | null | undefined): boolean {
+  if (!value) return true;
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
 function sanitizeString(value: string | null | undefined): string | null {
   if (value === null || value === undefined || value === "") return null;
   // Trim whitespace and remove any control characters
@@ -132,6 +137,13 @@ Deno.serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
+    }
+
+    if (!validateUuid(body.user_id)) {
+      return new Response(JSON.stringify({ error: "Invalid user ID" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     // Validate string lengths
@@ -224,6 +236,7 @@ Deno.serve(async (req) => {
 
     // Sanitize and insert submission
     const { error } = await supabase.from("alumni_submissions").insert({
+      user_id: body.user_id || null,
       full_name: sanitizeString(body.full_name),
       email: body.email.toLowerCase().trim(),
       graduation_year: body.graduation_year,

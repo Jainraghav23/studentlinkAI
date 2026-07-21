@@ -43,7 +43,7 @@ const signupSchema = z.object({
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, signUp, signIn, resetPassword, resendConfirmation, updatePassword, loading } = useAuth();
+  const { user, signUp, signIn, resetPassword, updatePassword, loading } = useAuth();
   // Preserve OAuth consent redirect (only accept same-origin relative paths).
   const nextParam = (() => {
     if (typeof window === "undefined") return null;
@@ -62,7 +62,6 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSendingReset, setIsSendingReset] = useState(false);
-  const [isResendingConfirmation, setIsResendingConfirmation] = useState(false);
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -112,6 +111,21 @@ const Auth = () => {
           return;
         }
 
+        if (user.email) {
+          const { data: claimableProfile } = await supabase
+            .from("alumni_profiles")
+            .select("id")
+            .eq("email", user.email.toLowerCase())
+            .eq("claimed", false)
+            .is("user_id", null)
+            .maybeSingle();
+
+          if (claimableProfile) {
+            goNext();
+            return;
+          }
+        }
+
         // Check if user has a pending submission linked to their account.
         let { data: submission } = await supabase
           .from("alumni_submissions")
@@ -153,7 +167,7 @@ const Auth = () => {
 
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
-          toast.error("Invalid email or password. If this is a new account, confirm your email or resend the confirmation link.");
+          toast.error("Invalid email or password. If your profile was approved, try resetting your password.");
         } else {
           toast.error(error.message);
         }
@@ -185,28 +199,6 @@ const Auth = () => {
       }
     } finally {
       setIsSendingReset(false);
-    }
-  };
-
-  const handleResendConfirmation = async () => {
-    const normalizedEmail = email.toLowerCase().trim();
-    const validation = z.string().email("Enter your email first").safeParse(normalizedEmail);
-    if (!validation.success) {
-      toast.error(validation.error.errors[0].message);
-      return;
-    }
-
-    setIsResendingConfirmation(true);
-    try {
-      const { error } = await resendConfirmation(normalizedEmail);
-
-      if (error) {
-        toast.error(error.message);
-      } else {
-        toast.success("Confirmation email sent. Check your inbox.");
-      }
-    } finally {
-      setIsResendingConfirmation(false);
     }
   };
 
@@ -545,16 +537,6 @@ const Auth = () => {
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                     Sign In
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleResendConfirmation}
-                    disabled={isSubmitting || isSendingReset || isResendingConfirmation}
-                  >
-                    {isResendingConfirmation ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                    Resend Confirmation Email
                   </Button>
                 </form>
               </TabsContent>
