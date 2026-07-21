@@ -8,6 +8,7 @@ import { Users, Loader2 } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 
 export interface AlumniProfile {
   id: string;
@@ -42,7 +43,10 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
     setLoading(true);
     const { data, error } = await supabase.rpc("get_approved_alumni_directory" as any);
 
-    if (!error && data) {
+    if (error) {
+      console.error("Directory load error:", error);
+      toast.error("Could not load the alumni directory. Please try again.");
+    } else if (data) {
       setAlumni(data as unknown as AlumniProfile[]);
     }
     setLoading(false);
