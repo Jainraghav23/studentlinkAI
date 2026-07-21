@@ -45,6 +45,25 @@ export function AlumniSubmissionForm() {
     website: "" // Honeypot field - bots will fill this, humans won't see it
   });
 
+  const submitProfile = async (userId: string, normalizedEmail: string) => {
+    return supabase.functions.invoke("submit-alumni", {
+      body: {
+        user_id: userId,
+        full_name: formData.full_name.trim(),
+        email: normalizedEmail,
+        graduation_year: parseInt(formData.graduation_year),
+        job_title: formData.job_title.trim() || null,
+        company: formData.company.trim() || null,
+        location: formData.location.trim() || null,
+        specialization: formData.specialization || null,
+        linkedin_url: formData.linkedin_url.trim() || null,
+        bio: formData.bio.trim() || null,
+        candidate_type: formData.candidate_type || "domestic",
+        country: formData.candidate_type === "international" ? (formData.country.trim() || null) : null,
+      },
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -85,42 +104,37 @@ export function AlumniSubmissionForm() {
     try {
       const normalizedEmail = formData.email.toLowerCase().trim();
       const { data: authData, error: signUpError } = await signUp(normalizedEmail, formData.password);
+      let userId = authData?.user?.id;
 
       if (signUpError) {
         if (signUpError.message.includes("User already registered")) {
-          toast.error("This email is already registered. Please sign in instead.");
+          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+            email: normalizedEmail,
+            password: formData.password,
+          });
+
+          if (signInError || !signInData.user) {
+            toast.error("This email already has an account. Please sign in, then complete your submission.");
+            return;
+          }
+
+          userId = signInData.user.id;
         } else {
           toast.error(signUpError.message);
+          return;
         }
-        return;
       }
 
-      if (!authData?.user) {
+      if (!userId) {
         toast.error("Account created, but we could not finish your profile submission. Please sign in and try again.");
         return;
       }
 
-      const { error: submissionError } = await supabase
-        .from("alumni_submissions")
-        .insert({
-          user_id: authData.user.id,
-          full_name: formData.full_name,
-          email: normalizedEmail,
-          graduation_year: parseInt(formData.graduation_year),
-          job_title: formData.job_title || null,
-          company: formData.company || null,
-          location: formData.location || null,
-          specialization: formData.specialization || null,
-          linkedin_url: formData.linkedin_url || null,
-          bio: formData.bio || null,
-          candidate_type: formData.candidate_type || "domestic",
-          country: formData.candidate_type === "international" ? (formData.country || null) : null,
-          status: "pending",
-        });
+      const { data: submissionData, error: submissionError } = await submitProfile(userId, normalizedEmail);
 
-      if (submissionError) {
-        console.error("Submission error:", submissionError);
-        toast.error("Account created but submission failed. Please contact support.");
+      if (submissionError || submissionData?.error) {
+        console.error("Submission error:", submissionError || submissionData?.error);
+        toast.error(submissionData?.error || "Account created but submission failed. Please contact support.");
         return;
       }
 
