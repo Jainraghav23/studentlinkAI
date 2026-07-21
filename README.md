@@ -1,73 +1,93 @@
-# Welcome to your Lovable project
+# StudentLink AI
 
-## Project info
+StudentLink AI is a trusted student and alumni network built to help students find the right people, advice, referrals, events, and community opportunities in one place.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+I started this as a personal project after noticing how hard it can be for students to find alumni or peers who have already gone through the same classes, internship searches, interviews, or career decisions. A lot of that help exists, but it is scattered across LinkedIn, group chats, spreadsheets, and one-off messages. StudentLink AI brings those connections into a more organized and approved community directory.
 
-## How can I edit this code?
+Live site: https://studentlink-ai.jainraghav-rj.chatgpt.site
 
-There are several ways of editing your application.
+## What It Does
 
-**Use Lovable**
+- Secure signup and login with Supabase Auth
+- Admin approval flow before users can access the private directory
+- Student and alumni profile directory
+- Search by name, graduation year, company, location, and specialization
+- Admin dashboard for reviewing, approving, and rejecting applications
+- Duplicate pending application protection
+- Profile claiming by email for migrated or pre-existing profiles
+- Sections for events, groups, interview experiences, and referrals
+- Public deployment through Codex hosting
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Why I Built It
 
-Changes made via Lovable will be committed automatically to this repo.
+I wanted to build something that could start small for my own community, but eventually grow into a useful platform for my university. The long-term goal is to make it easier for students to find mentors, ask better questions, discover opportunities, and build relationships with alumni and other students.
 
-**Use your preferred IDE**
+StudentLink AI is not just a directory. It is the foundation for a smarter campus network where students can get connected to the people most likely to help them.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Future Plans
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- AI mentor matching based on goals, interests, major, skills, and target companies
+- AI-generated intro messages so students can reach out more confidently
+- Smart profile recommendations for students looking for advice
+- Mentorship request tracking and follow-ups
+- Campus opportunity feed for jobs, referrals, events, and student groups
+- Better admin analytics for community growth and engagement
+- More trust and verification features for university communities
 
-Follow these steps:
+## How I Used Codex
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Codex was used throughout the project as my main coding and deployment partner. It helped me:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- Transfer the project from Lovable into GitHub and Codex
+- Rename and rebrand the app as StudentLink AI
+- Connect the app to my own Supabase project
+- Debug authentication, password reset, approval, and directory access issues
+- Fix signup submission failures after migrating away from Lovable Cloud
+- Add duplicate pending application protection
+- Write and organize SQL migrations
+- Push changes to GitHub
+- Build and deploy the public site after each fix
 
-# Step 3: Install the necessary dependencies.
-npm i
+Codex was especially useful because this project involved real production problems, not just UI work. It helped me reason through database ownership, Supabase Auth, row-level security, migrations, environment variables, and deployment.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+## How I Used GPT-5.6
+
+I used GPT-5.6 as a product and coding partner. It helped me think through the user experience, understand error messages, write SQL queries, plan the app flow, and decide what features should come next.
+
+GPT-5.6 also helped me turn rough ideas into clearer product decisions, including how the approval flow should work, how users should recover access after migration, and how StudentLink AI could grow into an AI-powered mentor matching platform.
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+- Supabase Auth
+- Supabase Postgres
+- Codex hosting
+
+## Local Development
+
+```bash
+pnpm install
+pnpm run dev
 ```
 
-**Edit a file directly in GitHub**
+Create a `.env` file with your Supabase values:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+VITE_SUPABASE_URL=your-supabase-url
+VITE_SUPABASE_PUBLISHABLE_KEY=your-supabase-anon-key
+VITE_SUPABASE_PROJECT_ID=your-project-id
+```
 
-**Use GitHub Codespaces**
+Build for production:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+pnpm run build
+```
 
-## What technologies are used for this project?
+## Status
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+StudentLink AI is live as a working prototype. The current version supports signup, approval, directory access, admin management, events, groups, interview experiences, and referrals. The next major step is adding AI-powered mentor matching.
