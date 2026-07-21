@@ -91,6 +91,9 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
   const navLinks = (
     <>
       <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted w-full md:w-auto justify-start md:justify-center">
+        <Link to="/" onClick={() => setMobileOpen(false)}>Directory</Link>
+      </Button>
+      <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted w-full md:w-auto justify-start md:justify-center">
         <Link to="/community" onClick={() => setMobileOpen(false)}>Community</Link>
       </Button>
       <Button variant="outline" asChild className="font-bold text-foreground border-foreground/30 hover:bg-muted w-full md:w-auto justify-start md:justify-center">

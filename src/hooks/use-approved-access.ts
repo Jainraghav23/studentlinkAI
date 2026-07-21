@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/hooks/use-admin";
 
 export const useApprovedAccess = () => {
   const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: adminLoading } = useAdmin();
   const [loading, setLoading] = useState(true);
   const [isApproved, setIsApproved] = useState(false);
 
@@ -11,11 +13,19 @@ export const useApprovedAccess = () => {
     let isMounted = true;
 
     const checkAccess = async () => {
-      if (authLoading) return;
+      if (authLoading || adminLoading) return;
 
       if (!user) {
         if (isMounted) {
           setIsApproved(false);
+          setLoading(false);
+        }
+        return;
+      }
+
+      if (isAdmin) {
+        if (isMounted) {
+          setIsApproved(true);
           setLoading(false);
         }
         return;
@@ -54,7 +64,7 @@ export const useApprovedAccess = () => {
     return () => {
       isMounted = false;
     };
-  }, [authLoading, user]);
+  }, [adminLoading, authLoading, isAdmin, user]);
 
-  return { loading: authLoading || loading, isApproved };
+  return { loading: authLoading || adminLoading || loading, isApproved };
 };
