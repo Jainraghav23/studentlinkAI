@@ -45,9 +45,8 @@ export function AlumniSubmissionForm() {
     website: "" // Honeypot field - bots will fill this, humans won't see it
   });
 
-  const submitProfile = async (userId: string, normalizedEmail: string) => {
+  const submitProfile = async (normalizedEmail: string) => {
     const pendingSubmission = {
-        user_id: userId,
         full_name: formData.full_name.trim(),
         email: normalizedEmail,
         graduation_year: parseInt(formData.graduation_year),
@@ -133,7 +132,7 @@ export function AlumniSubmissionForm() {
         return;
       }
 
-      const { data: submissionData, error: submissionError } = await submitProfile(userId, normalizedEmail);
+      const { data: submissionData, error: submissionError } = await submitProfile(normalizedEmail);
 
       if (submissionError || submissionData?.error) {
         console.error("Submission error:", submissionError || submissionData?.error);

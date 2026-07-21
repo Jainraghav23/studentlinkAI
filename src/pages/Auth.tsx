@@ -257,7 +257,6 @@ const Auth = () => {
         const { error: submissionError } = await supabase
           .from("alumni_submissions")
           .insert({
-            user_id: data.user.id,
             full_name: fullName.trim(),
             email: email.toLowerCase().trim(),
             graduation_year: parseInt(graduationYear),
