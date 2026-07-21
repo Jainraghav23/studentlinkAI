@@ -44,11 +44,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+    // THEN verify the existing session against the current Supabase project.
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
+      if (error || !user) {
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+        setUser(user);
+        setLoading(false);
+      });
     });
 
     return () => subscription.unsubscribe();

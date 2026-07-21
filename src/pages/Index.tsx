@@ -56,6 +56,9 @@ const Index = () => {
             <p className="text-lg text-muted-foreground mb-4">
               Please log in to view the alumni directory.
             </p>
+            <p className="text-xs text-muted-foreground mb-4">
+              Connected to Supabase project luelaeepmmeynwliqpss.
+            </p>
             <Button asChild>
               <Link to="/auth">Login to View Directory</Link>
             </Button>
