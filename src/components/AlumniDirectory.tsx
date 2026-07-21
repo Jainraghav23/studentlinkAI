@@ -9,7 +9,6 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useAdmin } from "@/hooks/use-admin";
 
 export interface AlumniProfile {
   id: string;
@@ -32,7 +31,6 @@ interface AlumniDirectoryProps {
 }
 
 const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
-  const { isAdmin } = useAdmin();
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [candidateTypeFilter, setCandidateTypeFilter] = useState<string>("all");
@@ -43,21 +41,12 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
 
   const fetchAlumni = async () => {
     setLoading(true);
-    const { data, error } = await supabase.rpc("get_approved_alumni_directory" as any);
+    const { data, error } = await supabase
+      .from("alumni_profiles")
+      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country")
+      .order("graduation_year", { ascending: false });
 
-    if (error && isAdmin) {
-      const { data: adminData, error: adminError } = await supabase
-        .from("alumni_profiles")
-        .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country")
-        .order("graduation_year", { ascending: false });
-
-      if (adminError) {
-        console.error("Admin directory load error:", adminError);
-        toast.error("Could not load the alumni directory. Please try again.");
-      } else {
-        setAlumni(adminData as unknown as AlumniProfile[]);
-      }
-    } else if (error) {
+    if (error) {
       console.error("Directory load error:", error);
       toast.error("Could not load the alumni directory. Please try again.");
     } else if (data) {
@@ -68,7 +57,7 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
 
   useEffect(() => {
     fetchAlumni();
-  }, [isAdmin, refreshKey]);
+  }, [refreshKey]);
 
   const uniqueSpecializations = useMemo(() => {
     return [...new Set(alumni.map(a => a.specialization).filter(Boolean))] as string[];
