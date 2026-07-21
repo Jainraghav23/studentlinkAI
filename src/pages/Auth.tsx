@@ -43,7 +43,7 @@ const signupSchema = z.object({
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, signUp, signIn, resetPassword, loading } = useAuth();
+  const { user, signUp, signIn, resetPassword, updatePassword, loading } = useAuth();
   // Preserve OAuth consent redirect (only accept same-origin relative paths).
   const nextParam = (() => {
     if (typeof window === "undefined") return null;
@@ -62,6 +62,9 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSendingReset, setIsSendingReset] = useState(false);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [pendingSubmission, setPendingSubmission] = useState<string | null>(null);
   
@@ -75,10 +78,27 @@ const Auth = () => {
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [bio, setBio] = useState("");
 
+  // Detect Supabase password recovery links and show the reset form.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    if (params.get("reset") === "true" || hashParams.get("type") === "recovery") {
+      setIsPasswordRecovery(true);
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setIsPasswordRecovery(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   // Check if user has a pending submission or approved profile
   useEffect(() => {
     const checkUserStatus = async () => {
-      if (user && !loading) {
+      if (user && !loading && !isPasswordRecovery) {
         // Check if user has an approved profile
         const { data: profile } = await supabase
           .from("alumni_profiles")
@@ -116,7 +136,7 @@ const Auth = () => {
     };
 
     checkUserStatus();
-  }, [user, loading, navigate]);
+  }, [user, loading, isPasswordRecovery, navigate]);
 
   const handleSignIn = async () => {
     const validation = authSchema.safeParse({ email, password });
@@ -162,6 +182,37 @@ const Auth = () => {
       }
     } finally {
       setIsSendingReset(false);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    const validation = authSchema.shape.password.safeParse(newPassword);
+    if (!validation.success) {
+      toast.error(validation.error.errors[0].message);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await updatePassword(newPassword);
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Password updated.");
+        setIsPasswordRecovery(false);
+        setNewPassword("");
+        setConfirmPassword("");
+        setPassword("");
+        navigate("/auth", { replace: true });
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -223,6 +274,67 @@ const Auth = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (isPasswordRecovery) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="gradient-hero py-8">
+          <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-4">
+              <GraduationCap className="w-4 h-4 text-primary-foreground" />
+              <span className="text-sm font-medium text-primary-foreground">StudentLink AI</span>
+            </div>
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">
+              Reset Password
+            </h1>
+          </div>
+        </header>
+
+        <div className="flex-1 flex items-center justify-center p-4 -mt-8">
+          <Card className="w-full max-w-md shadow-card-hover">
+            <CardHeader className="text-center">
+              <CardTitle className="font-display text-2xl">Create New Password</CardTitle>
+              <CardDescription>
+                Choose a new password for your account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={(e) => { e.preventDefault(); handleUpdatePassword(); }} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">New Password</Label>
+                  <Input
+                    id="new-password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    minLength={6}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password">Confirm Password</Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    minLength={6}
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                  Update Password
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }

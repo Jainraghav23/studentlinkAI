@@ -9,6 +9,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, options?: { redirectTo?: string }) => Promise<{ data: { user: User | null } | null; error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  updatePassword: (password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -68,10 +69,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetPassword = async (email: string) => {
-    const redirectTo = `${window.location.origin}/auth`;
+    const appOrigin = window.location.origin.includes("localhost")
+      ? "https://studentlink-ai.jainraghav-rj.chatgpt.site"
+      : window.location.origin;
+    const redirectTo = `${appOrigin}/auth?reset=true`;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo,
     });
+    return { error };
+  };
+
+  const updatePassword = async (password: string) => {
+    const { error } = await supabase.auth.updateUser({ password });
     return { error };
   };
 
@@ -80,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, resetPassword, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, resetPassword, updatePassword, signOut }}>
       {children}
     </AuthContext.Provider>
   );
