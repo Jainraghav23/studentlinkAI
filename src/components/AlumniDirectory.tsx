@@ -45,7 +45,7 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
 
     if (error) {
       console.error("Directory load error:", error);
-      toast.error("Could not load the alumni directory. Please try again.");
+      toast.error(`Could not load directory: ${error.message}`);
     } else if (data) {
       setAlumni(data as unknown as AlumniProfile[]);
     }
