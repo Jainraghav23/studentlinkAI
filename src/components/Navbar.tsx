@@ -179,7 +179,7 @@ const Navbar = ({ onProfileUpdate }: NavbarProps) => {
                 <GraduationCap className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="font-display text-lg font-semibold hidden sm:block">
-                MBA Alumni
+                StudentLink AI
               </span>
             </Link>
 

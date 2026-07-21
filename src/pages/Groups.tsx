@@ -56,7 +56,7 @@ const GroupsContent = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Helmet>
-        <title>Alumni Groups | Erdman MBA Alumni</title>
+        <title>Alumni Groups | StudentLink AI</title>
         <meta name="description" content="Join niche alumni communities — by location, industry, class year, or interest." />
       </Helmet>
       <Navbar />

@@ -14,18 +14,18 @@ const Hero = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-8 animate-fade-in">
             <GraduationCap className="w-4 h-4" />
-            <span className="text-sm font-medium">MBA Alumni Network</span>
+            <span className="text-sm font-medium">StudentLink AI Network</span>
           </div>
 
           {/* Title */}
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
-            A Decade of{" "}
-            <span className="text-gradient">Excellence</span>
+            Student Connections,{" "}
+            <span className="text-gradient">Powered by AI</span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto mb-12 animate-fade-in" style={{ animationDelay: "200ms" }}>
-            Connecting 10 years of exceptional MBA graduates. Explore our alumni network and discover where our community is making an impact.
+            Connect students, alumni, and early-career professionals through profiles, events, referrals, groups, and community updates.
           </p>
 
           {/* Stats */}
@@ -35,7 +35,7 @@ const Hero = () => {
                 <Users className="w-6 h-6 text-secondary" />
               </div>
               <p className="text-2xl md:text-3xl font-display font-bold">300+</p>
-              <p className="text-sm text-primary-foreground/70">Alumni</p>
+              <p className="text-sm text-primary-foreground/70">Members</p>
             </div>
             
             <div className="text-center">

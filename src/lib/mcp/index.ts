@@ -9,11 +9,11 @@ import createCommunityPostTool from "./tools/create-community-post";
 const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unset";
 
 export default defineMcp({
-  name: "erdman-alumni-mcp",
-  title: "Erdman Alumni MCP",
+  name: "studentlink-ai-mcp",
+  title: "StudentLink AI MCP",
   version: "0.1.0",
   instructions:
-    "Tools for the Erdman Alumni network. Search alumni, view your own profile, list upcoming events, browse job referrals, discover groups, and post to the community feed. All calls act as the signed-in alumni user.",
+    "Tools for the StudentLink AI network. Search alumni, view your own profile, list upcoming events, browse job referrals, discover groups, and post to the community feed. All calls act as the signed-in user.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",

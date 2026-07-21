@@ -201,7 +201,7 @@ const Auth = () => {
           <div className="container mx-auto px-4 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-4">
               <GraduationCap className="w-4 h-4 text-primary-foreground" />
-              <span className="text-sm font-medium text-primary-foreground">UW-Madison MBA Alumni</span>
+              <span className="text-sm font-medium text-primary-foreground">StudentLink AI</span>
             </div>
             <h1 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">
               Application Status
@@ -263,7 +263,7 @@ const Auth = () => {
           <div className="container mx-auto px-4 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-4">
               <GraduationCap className="w-4 h-4 text-primary-foreground" />
-              <span className="text-sm font-medium text-primary-foreground">UW-Madison MBA Alumni</span>
+              <span className="text-sm font-medium text-primary-foreground">StudentLink AI</span>
             </div>
             <h1 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">
               Application Submitted!
@@ -311,10 +311,10 @@ const Auth = () => {
         <div className="container mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 mb-4">
             <GraduationCap className="w-4 h-4 text-primary-foreground" />
-            <span className="text-sm font-medium text-primary-foreground">UW-Madison MBA Alumni</span>
+            <span className="text-sm font-medium text-primary-foreground">StudentLink AI</span>
           </div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-primary-foreground">
-            Join Our Alumni Network
+            Join StudentLink AI
           </h1>
         </div>
       </header>

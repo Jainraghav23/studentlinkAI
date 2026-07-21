@@ -20,10 +20,10 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>UW-Madison MBA Alumni Directory | A Decade of Excellence</title>
+        <title>StudentLink AI | Student and Alumni Network</title>
         <meta
           name="description"
-          content="Explore the University of Wisconsin-Madison MBA alumni network spanning 10 years of exceptional graduates. Connect with alumni across 50+ countries."
+          content="Explore StudentLink AI, an AI-powered network for students, alumni, events, referrals, groups, and community updates."
         />
       </Helmet>
       <div className="min-h-screen bg-background">

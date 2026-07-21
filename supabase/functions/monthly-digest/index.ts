@@ -113,7 +113,7 @@ function renderHtml(data: DigestData, siteUrl: string): string {
   return `<!DOCTYPE html>
 <html><body style="font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #1a1a1a;">
   <div style="background: linear-gradient(135deg, hsl(0, 73%, 35%), hsl(0, 73%, 25%)); padding: 32px 24px; border-radius: 12px; color: white; text-align: center;">
-    <h1 style="margin:0; font-size: 24px;">Erdman Alumni Digest</h1>
+    <h1 style="margin:0; font-size: 24px;">StudentLink AI Digest</h1>
     <p style="margin: 8px 0 0; opacity: 0.9;">${data.periodLabel}</p>
   </div>
   <h2 style="margin-top: 32px; border-bottom: 2px solid hsl(0, 73%, 35%); padding-bottom: 8px;">👋 New Alumni</h2>
@@ -125,7 +125,7 @@ function renderHtml(data: DigestData, siteUrl: string): string {
   <div style="text-align: center; margin-top: 40px;">
     <a href="${siteUrl}" style="display: inline-block; background: hsl(0, 73%, 35%); color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">Visit the Directory</a>
   </div>
-  <p style="text-align: center; color: #999; font-size: 12px; margin-top: 32px;">You're receiving this because you're part of the Erdman Alumni Community.</p>
+  <p style="text-align: center; color: #999; font-size: 12px; margin-top: 32px;">You're receiving this because you're part of the StudentLink AI community.</p>
 </body></html>`;
 }
 
@@ -144,9 +144,9 @@ Deno.serve(async (req) => {
     const previewOnly = url.searchParams.get("preview") === "true";
 
     const data = await compileDigest(supabase);
-    const siteUrl = "https://erdmanalumni.lovable.app";
+    const siteUrl = "https://erdman-alumni.jainraghav-rj.chatgpt.site";
     const html = renderHtml(data, siteUrl);
-    const subject = `Erdman Alumni Digest — ${data.periodLabel}`;
+    const subject = `StudentLink AI Digest - ${data.periodLabel}`;
 
     if (previewOnly) {
       return new Response(JSON.stringify({ subject, html, data }), {

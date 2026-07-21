@@ -107,7 +107,7 @@ export default function OAuthConsent() {
         <CardHeader>
           <div className="flex items-center gap-2 mb-2">
             <ShieldCheck className="h-5 w-5 text-primary" />
-            <CardTitle>Connect {clientName} to Erdman Alumni</CardTitle>
+            <CardTitle>Connect {clientName} to StudentLink AI</CardTitle>
           </div>
           <CardDescription>
             This lets {clientName} use this app as you. It can call the app's enabled tools and

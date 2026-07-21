@@ -88,10 +88,10 @@ const AlumniProfile = () => {
   return (
     <>
       <Helmet>
-        <title>{alumni.full_name} | UW-Madison MBA Alumni</title>
+        <title>{alumni.full_name} | StudentLink AI</title>
         <meta
           name="description"
-          content={`${alumni.full_name}, Class of ${alumni.graduation_year}. ${alumni.job_title ? `${alumni.job_title} at ${alumni.company}` : "UW-Madison MBA Alumni"}`}
+          content={`${alumni.full_name}, Class of ${alumni.graduation_year}. ${alumni.job_title ? `${alumni.job_title} at ${alumni.company}` : "StudentLink AI"}`}
         />
       </Helmet>
       <div className="min-h-screen bg-background">
