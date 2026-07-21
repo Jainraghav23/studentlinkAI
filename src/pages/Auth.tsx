@@ -43,7 +43,7 @@ const signupSchema = z.object({
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, signUp, signIn, loading } = useAuth();
+  const { user, signUp, signIn, resetPassword, loading } = useAuth();
   // Preserve OAuth consent redirect (only accept same-origin relative paths).
   const nextParam = (() => {
     if (typeof window === "undefined") return null;
@@ -61,6 +61,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSendingReset, setIsSendingReset] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [pendingSubmission, setPendingSubmission] = useState<string | null>(null);
   
@@ -140,6 +141,27 @@ const Auth = () => {
       }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const validation = z.string().email("Enter your email first").safeParse(email);
+    if (!validation.success) {
+      toast.error(validation.error.errors[0].message);
+      return;
+    }
+
+    setIsSendingReset(true);
+    try {
+      const { error } = await resetPassword(email.toLowerCase().trim());
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Password reset email sent. Check your inbox.");
+      }
+    } finally {
+      setIsSendingReset(false);
     }
   };
 
@@ -361,7 +383,19 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
+                    <div className="flex items-center justify-between gap-3">
+                      <Label htmlFor="signin-password">Password</Label>
+                      <Button
+                        type="button"
+                        variant="link"
+                        size="sm"
+                        className="h-auto px-0 text-xs"
+                        onClick={handleForgotPassword}
+                        disabled={isSubmitting || isSendingReset}
+                      >
+                        {isSendingReset ? "Sending..." : "Forgot password?"}
+                      </Button>
+                    </div>
                     <Input
                       id="signin-password"
                       type="password"
