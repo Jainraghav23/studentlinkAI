@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
     const previewOnly = url.searchParams.get("preview") === "true";
 
     const data = await compileDigest(supabase);
-    const siteUrl = "https://erdman-alumni.jainraghav-rj.chatgpt.site";
+    const siteUrl = "https://studentlink-ai.jainraghav-rj.chatgpt.site";
     const html = renderHtml(data, siteUrl);
     const subject = `StudentLink AI Digest - ${data.periodLabel}`;
 
