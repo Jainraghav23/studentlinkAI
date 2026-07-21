@@ -40,10 +40,7 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
 
   const fetchAlumni = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("alumni_profiles_public" as any)
-      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country")
-      .order("graduation_year", { ascending: false });
+    const { data, error } = await supabase.rpc("get_approved_alumni_directory" as any);
 
     if (!error && data) {
       setAlumni(data as unknown as AlumniProfile[]);
