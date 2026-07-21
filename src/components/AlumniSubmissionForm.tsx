@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { UserPlus } from "lucide-react";
+import { getSubmissionErrorMessage } from "@/lib/alumni-submissions";
 
 const SPECIALIZATIONS = [
   "Software Engineering",
@@ -136,7 +137,7 @@ export function AlumniSubmissionForm() {
 
       if (submissionError || submissionData?.error) {
         console.error("Submission error:", submissionError || submissionData?.error);
-        toast.error(submissionData?.error || "Account created but submission failed. Please contact support.");
+        toast.error(getSubmissionErrorMessage(submissionError || submissionData?.error));
         return;
       }
 

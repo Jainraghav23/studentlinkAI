@@ -13,6 +13,7 @@ import { GraduationCap, Loader2, Clock, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
+import { getSubmissionErrorMessage } from "@/lib/alumni-submissions";
 
 const SPECIALIZATIONS = [
   "Software Engineering",
@@ -272,7 +273,7 @@ const Auth = () => {
 
         if (submissionError) {
           console.error("Submission error:", submissionError);
-          toast.error(submissionError.message || "Account created but submission failed. Please contact support.");
+          toast.error(getSubmissionErrorMessage(submissionError));
         } else {
           setSignupSuccess(true);
         }
