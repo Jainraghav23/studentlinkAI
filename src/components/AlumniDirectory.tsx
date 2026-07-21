@@ -41,10 +41,7 @@ const AlumniDirectory = ({ refreshKey }: AlumniDirectoryProps) => {
 
   const fetchAlumni = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("alumni_profiles_public" as any)
-      .select("id, full_name, graduation_year, job_title, company, location, specialization, linkedin_url, bio, avatar_url, candidate_type, country")
-      .order("graduation_year", { ascending: false });
+    const { data, error } = await supabase.rpc("get_directory_profiles" as any);
 
     if (error) {
       console.error("Directory load error:", error);
