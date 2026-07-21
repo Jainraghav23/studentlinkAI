@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { UserPlus } from "lucide-react";
 
@@ -25,11 +26,13 @@ const SPECIALIZATIONS = [
 const YEARS = Array.from({ length: 14 }, (_, i) => 2015 + i);
 
 export function AlumniSubmissionForm() {
+  const { signUp } = useAuth();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
+    password: "",
     graduation_year: "",
     job_title: "",
     company: "",
@@ -45,7 +48,7 @@ export function AlumniSubmissionForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.full_name || !formData.email || !formData.graduation_year) {
+    if (!formData.full_name || !formData.email || !formData.password || !formData.graduation_year) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -61,19 +64,48 @@ export function AlumniSubmissionForm() {
       return;
     }
 
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
     if (formData.bio.length > 2000) {
       toast.error("Bio is too long (max 2000 characters)");
+      return;
+    }
+
+    if (formData.website) {
+      toast.success("Your account and profile have been submitted for review!");
+      setOpen(false);
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      // Use edge function for rate-limited, validated submissions
-      const { data, error } = await supabase.functions.invoke("submit-alumni", {
-        body: {
+      const normalizedEmail = formData.email.toLowerCase().trim();
+      const { data: authData, error: signUpError } = await signUp(normalizedEmail, formData.password);
+
+      if (signUpError) {
+        if (signUpError.message.includes("User already registered")) {
+          toast.error("This email is already registered. Please sign in instead.");
+        } else {
+          toast.error(signUpError.message);
+        }
+        return;
+      }
+
+      if (!authData?.user) {
+        toast.error("Account created, but we could not finish your profile submission. Please sign in and try again.");
+        return;
+      }
+
+      const { error: submissionError } = await supabase
+        .from("alumni_submissions")
+        .insert({
+          user_id: authData.user.id,
           full_name: formData.full_name,
-          email: formData.email,
+          email: normalizedEmail,
           graduation_year: parseInt(formData.graduation_year),
           job_title: formData.job_title || null,
           company: formData.company || null,
@@ -83,21 +115,20 @@ export function AlumniSubmissionForm() {
           bio: formData.bio || null,
           candidate_type: formData.candidate_type || "domestic",
           country: formData.candidate_type === "international" ? (formData.country || null) : null,
-          website: formData.website // Honeypot field
-        }
-      });
+          status: "pending",
+        });
 
-      if (error) throw error;
-
-      if (data?.error) {
-        toast.error(data.error);
+      if (submissionError) {
+        console.error("Submission error:", submissionError);
+        toast.error("Account created but submission failed. Please contact support.");
         return;
       }
 
-      toast.success(data?.message || "Your profile has been submitted for review!");
+      toast.success("Your account and profile have been submitted for review!");
       setFormData({
         full_name: "",
         email: "",
+        password: "",
         graduation_year: "",
         job_title: "",
         company: "",
@@ -152,6 +183,20 @@ export function AlumniSubmissionForm() {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="john@example.com"
               maxLength={320}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">Password *</Label>
+            <Input
+              id="password"
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              placeholder="Create a password"
+              minLength={6}
+              autoComplete="new-password"
               required
             />
           </div>
@@ -303,7 +348,7 @@ export function AlumniSubmissionForm() {
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit Profile"}
+              {isSubmitting ? "Creating account..." : "Create Account & Submit"}
             </Button>
           </div>
         </form>
