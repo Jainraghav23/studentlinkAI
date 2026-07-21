@@ -46,8 +46,7 @@ export function AlumniSubmissionForm() {
   });
 
   const submitProfile = async (userId: string, normalizedEmail: string) => {
-    return supabase.functions.invoke("submit-alumni", {
-      body: {
+    const pendingSubmission = {
         user_id: userId,
         full_name: formData.full_name.trim(),
         email: normalizedEmail,
@@ -60,8 +59,12 @@ export function AlumniSubmissionForm() {
         bio: formData.bio.trim() || null,
         candidate_type: formData.candidate_type || "domestic",
         country: formData.candidate_type === "international" ? (formData.country.trim() || null) : null,
-      },
-    });
+        status: "pending",
+      };
+
+    return supabase
+      .from("alumni_submissions")
+      .insert(pendingSubmission);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

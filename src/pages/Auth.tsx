@@ -253,31 +253,27 @@ const Auth = () => {
         return;
       }
 
-      // Create alumni submission through the validated Edge Function instead
-      // of relying on browser-side database insert permissions.
       if (data?.user) {
-        const { data: submissionData, error: submissionError } = await supabase.functions.invoke(
-          "submit-alumni",
-          {
-            body: {
-              user_id: data.user.id,
-              full_name: fullName.trim(),
-              email: email.toLowerCase().trim(),
-              graduation_year: parseInt(graduationYear),
-              job_title: jobTitle.trim() || null,
-              company: company.trim() || null,
-              location: location.trim() || null,
-              specialization: specialization || null,
-              linkedin_url: linkedinUrl.trim() || null,
-              bio: bio.trim() || null,
-              candidate_type: "domestic",
-            },
-          },
-        );
+        const { error: submissionError } = await supabase
+          .from("alumni_submissions")
+          .insert({
+            user_id: data.user.id,
+            full_name: fullName.trim(),
+            email: email.toLowerCase().trim(),
+            graduation_year: parseInt(graduationYear),
+            job_title: jobTitle.trim() || null,
+            company: company.trim() || null,
+            location: location.trim() || null,
+            specialization: specialization || null,
+            linkedin_url: linkedinUrl.trim() || null,
+            bio: bio.trim() || null,
+            candidate_type: "domestic",
+            status: "pending",
+          });
 
-        if (submissionError || submissionData?.error) {
-          console.error("Submission error:", submissionError || submissionData?.error);
-          toast.error(submissionData?.error || "Account created but submission failed. Please contact support.");
+        if (submissionError) {
+          console.error("Submission error:", submissionError);
+          toast.error(submissionError.message || "Account created but submission failed. Please contact support.");
         } else {
           setSignupSuccess(true);
         }
