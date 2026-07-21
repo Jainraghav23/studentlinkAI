@@ -9,6 +9,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, options?: { redirectTo?: string }) => Promise<{ data: { user: User | null } | null; error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  resendConfirmation: (email: string) => Promise<{ error: Error | null }>;
   updatePassword: (password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -27,6 +28,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const getAppOrigin = () => (
+    window.location.origin.includes("localhost")
+      ? "https://studentlink-ai.jainraghav-rj.chatgpt.site"
+      : window.location.origin
+  );
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -49,11 +56,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, options?: { redirectTo?: string }) => {
-    const authOptions = options?.redirectTo
-      ? { emailRedirectTo: options.redirectTo }
-      : undefined;
+    const normalizedEmail = email.toLowerCase().trim();
+    const authOptions = {
+      emailRedirectTo: options?.redirectTo || `${getAppOrigin()}/auth`,
+    };
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: normalizedEmail,
       password,
       options: authOptions,
     });
@@ -62,19 +70,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: email.toLowerCase().trim(),
       password,
     });
     return { error };
   };
 
   const resetPassword = async (email: string) => {
-    const appOrigin = window.location.origin.includes("localhost")
-      ? "https://studentlink-ai.jainraghav-rj.chatgpt.site"
-      : window.location.origin;
-    const redirectTo = `${appOrigin}/auth?reset=true`;
+    const redirectTo = `${getAppOrigin()}/auth?reset=true`;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo,
+    });
+    return { error };
+  };
+
+  const resendConfirmation = async (email: string) => {
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: email.toLowerCase().trim(),
+      options: {
+        emailRedirectTo: `${getAppOrigin()}/auth`,
+      },
     });
     return { error };
   };
@@ -89,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, resetPassword, updatePassword, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, resetPassword, resendConfirmation, updatePassword, signOut }}>
       {children}
     </AuthContext.Provider>
   );

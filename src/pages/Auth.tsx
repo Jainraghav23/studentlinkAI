@@ -43,7 +43,7 @@ const signupSchema = z.object({
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, signUp, signIn, resetPassword, updatePassword, loading } = useAuth();
+  const { user, signUp, signIn, resetPassword, resendConfirmation, updatePassword, loading } = useAuth();
   // Preserve OAuth consent redirect (only accept same-origin relative paths).
   const nextParam = (() => {
     if (typeof window === "undefined") return null;
@@ -62,6 +62,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSendingReset, setIsSendingReset] = useState(false);
+  const [isResendingConfirmation, setIsResendingConfirmation] = useState(false);
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -139,7 +140,8 @@ const Auth = () => {
   }, [user, loading, isPasswordRecovery, navigate]);
 
   const handleSignIn = async () => {
-    const validation = authSchema.safeParse({ email, password });
+    const normalizedEmail = email.toLowerCase().trim();
+    const validation = authSchema.safeParse({ email: normalizedEmail, password });
     if (!validation.success) {
       toast.error(validation.error.errors[0].message);
       return;
@@ -147,11 +149,11 @@ const Auth = () => {
 
     setIsSubmitting(true);
     try {
-      const { error } = await signIn(email, password);
+      const { error } = await signIn(normalizedEmail, password);
 
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
-          toast.error("Invalid email or password. Please try again.");
+          toast.error("Invalid email or password. If this is a new account, confirm your email or resend the confirmation link.");
         } else {
           toast.error(error.message);
         }
@@ -165,7 +167,8 @@ const Auth = () => {
   };
 
   const handleForgotPassword = async () => {
-    const validation = z.string().email("Enter your email first").safeParse(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    const validation = z.string().email("Enter your email first").safeParse(normalizedEmail);
     if (!validation.success) {
       toast.error(validation.error.errors[0].message);
       return;
@@ -173,7 +176,7 @@ const Auth = () => {
 
     setIsSendingReset(true);
     try {
-      const { error } = await resetPassword(email.toLowerCase().trim());
+      const { error } = await resetPassword(normalizedEmail);
 
       if (error) {
         toast.error(error.message);
@@ -182,6 +185,28 @@ const Auth = () => {
       }
     } finally {
       setIsSendingReset(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    const normalizedEmail = email.toLowerCase().trim();
+    const validation = z.string().email("Enter your email first").safeParse(normalizedEmail);
+    if (!validation.success) {
+      toast.error(validation.error.errors[0].message);
+      return;
+    }
+
+    setIsResendingConfirmation(true);
+    try {
+      const { error } = await resendConfirmation(normalizedEmail);
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Confirmation email sent. Check your inbox.");
+      }
+    } finally {
+      setIsResendingConfirmation(false);
     }
   };
 
@@ -520,6 +545,16 @@ const Auth = () => {
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                     Sign In
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleResendConfirmation}
+                    disabled={isSubmitting || isSendingReset || isResendingConfirmation}
+                  >
+                    {isResendingConfirmation ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                    Resend Confirmation Email
                   </Button>
                 </form>
               </TabsContent>
